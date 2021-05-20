@@ -1,4 +1,4 @@
-import { Auth } from "svelte-kit-auth";
+import SvelteKitAuth from "svelte-kit-auth";
 import {
   FacebookAuthProvider,
   GoogleOAuthProvider,
@@ -6,7 +6,7 @@ import {
   TwitterAuthProvider,
 } from "svelte-kit-auth/providers";
 
-export const appAuth = new Auth({
+export const appAuth = new SvelteKitAuth({
   providers: [
     new GoogleOAuthProvider({
       clientId: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID,
