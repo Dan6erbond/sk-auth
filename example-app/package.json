@@ -30,6 +30,7 @@
   "type": "module",
   "dependencies": {
     "@fontsource/fira-mono": "^4.3.0",
-    "@fontsource/inter": "^4.3.0"
+    "@fontsource/inter": "^4.3.0",
+    "svelte-kit-auth": "link:../"
   }
 }
