@@ -4,13 +4,16 @@ import type { Headers } from "@sveltejs/kit/types/helper";
 import cookie from "cookie";
 import * as jsonwebtoken from "jsonwebtoken";
 import type { JWT, Session } from "./interfaces";
+import { join } from "./path";
 import type { Provider } from "./providers";
 
 interface AuthConfig {
-  providers?: Provider[];
+  providers: Provider[];
   callbacks?: AuthCallbacks;
   jwtSecret?: string;
   jwtExpiresIn?: string | number;
+  host?: string;
+  basePath?: string;
 }
 
 interface AuthCallbacks {
@@ -61,8 +64,13 @@ export class Auth {
     return token;
   }
 
-  getBaseUrl(host: string) {
-    return `http://${host}`;
+  getBaseUrl(host?: string) {
+    return this.config?.host ?? `http://${host}`;
+  }
+
+  getPath(path: string, host?: string) {
+    const uri = join([this.config?.basePath ?? "/api/auth", path]);
+    return new URL(uri, this.getBaseUrl(host)).pathname;
   }
 
   setToken(headers: Headers, newToken: JWT | any) {
@@ -122,7 +130,7 @@ export class Auth {
   async handleEndpoint(request: ServerRequest): Promise<EndpointOutput> {
     const { path, headers, method, host } = request;
 
-    if (path === "/api/auth/signout") {
+    if (path === this.getPath("signout")) {
       const token = this.setToken(headers, {});
       const jwt = this.signToken(token);
 
@@ -167,9 +175,9 @@ export class Auth {
   get: RequestHandler = async (request) => {
     const { path } = request;
 
-    if (path === "/api/auth/csrf") {
+    if (path === this.getPath("csrf")) {
       return { body: "1234" }; // TODO: Generate real token
-    } else if (path === "/api/auth/session") {
+    } else if (path === this.getPath("session")) {
       const session = await this.getSession(request);
       return {
         body: {
