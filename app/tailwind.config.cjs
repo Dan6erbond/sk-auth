@@ -1,4 +1,6 @@
 const { tailwindExtractor } = require("tailwindcss/lib/lib/purgeUnusedStyles");
+const { fontFamily } = require("tailwindcss/defaultTheme");
+const colors = require("tailwindcss/colors");
 
 module.exports = {
   mode: "aot",
@@ -17,7 +19,27 @@ module.exports = {
     safelist: [/^svelte-[\d\w]+$/],
   },
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Inter", ...fontFamily.sans],
+        serif: [...fontFamily.serif],
+        mono: ["Fira Mono", ...fontFamily.mono],
+      },
+      colors: {
+        transparent: "transparent",
+        current: "currentColor",
+        black: colors.black,
+        white: colors.white,
+        gray: colors.trueGray,
+        "cool-gray": colors.blueGray,
+        blue: colors.blue,
+        indigo: colors.indigo,
+        red: colors.rose,
+        orange: colors.orange,
+        yellow: colors.amber,
+        pink: colors.pink,
+      },
+    },
   },
   variants: {
     extend: {},

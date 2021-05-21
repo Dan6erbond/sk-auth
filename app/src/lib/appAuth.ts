@@ -46,7 +46,7 @@ export const appAuth = new SvelteKitAuth({
           ...token,
           user: {
             ...token.user,
-            [provider]: account,
+            connections: { [provider]: account },
           },
         };
       }
