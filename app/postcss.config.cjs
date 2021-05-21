@@ -6,17 +6,18 @@ const mode = process.env.NODE_ENV;
 const dev = mode === "development";
 
 module.exports = {
-	plugins: [
-		// Some plugins, like postcss-nested, need to run before Tailwind
-		
-		tailwindcss,
-		
-		// But others, like autoprefixer, need to run after
+  plugins: [
+    // Some plugins, like postcss-nested, need to run before Tailwind
 
-		autoprefixer,
-		
-		!dev && cssnano({
-			preset: "default",
-		}),
-	],
+    tailwindcss,
+
+    // But others, like autoprefixer, need to run after
+
+    autoprefixer,
+
+    !dev &&
+      cssnano({
+        preset: "default",
+      }),
+  ],
 };
