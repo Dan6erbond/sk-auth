@@ -21,6 +21,7 @@
     "p-4",
     "items-center",
     "shadow-md",
+    "bg-white",
   )}
 >
   <a href="/" class={clsx("flex", "items-center", "space-x-2")}>
@@ -179,3 +180,19 @@
 >
   <slot />
 </main>
+
+<footer
+  class={clsx(
+    "p-4",
+    "md:p-8",
+    "shadow-2xl",
+    "w-full",
+    "flex",
+    "items-center",
+    "flex-col",
+    "bg-orange-600",
+    "text-white"
+  )}
+>
+  <span>© RaviAnand M, 2021</span>
+</footer>
