@@ -9,4 +9,5 @@ interface ImportMetaEnv {
   VITE_TWITTER_API_SECRET: string;
   VITE_REDDIT_API_KEY: string;
   VITE_REDDIT_API_SECRET: string;
+  JWT_SECRET_KEY: string;
 }

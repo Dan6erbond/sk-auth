@@ -98,4 +98,5 @@ export const appAuth = new SvelteKitAuth({
       return token;
     },
   },
+  jwtSecret: import.meta.env.JWT_SECRET_KEY,
 });
