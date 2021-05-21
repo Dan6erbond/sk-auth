@@ -8,55 +8,57 @@ interface RedditOAuthProviderConfig extends OAuth2ProviderConfig {
   duration?: "temporary" | "permanent";
 }
 
+const redditProfileHandler = ({
+  is_employee,
+  has_external_account,
+  snoovatar_img,
+  verified,
+  id,
+  over_18,
+  is_gold,
+  is_mod,
+  awarder_karma,
+  has_verified_email,
+  is_suspended,
+  icon_img,
+  pref_nightmode,
+  awardee_karma,
+  password_set,
+  link_karma,
+  total_karma,
+  name,
+  created,
+  created_utc,
+  comment_karma,
+}) => ({
+  is_employee,
+  has_external_account,
+  snoovatar_img,
+  verified,
+  id,
+  over_18,
+  is_gold,
+  is_mod,
+  awarder_karma,
+  has_verified_email,
+  is_suspended,
+  icon_img,
+  pref_nightmode,
+  awardee_karma,
+  password_set,
+  link_karma,
+  total_karma,
+  name,
+  created,
+  created_utc,
+  comment_karma,
+});
+
 const defaultConfig: Partial<RedditOAuthProviderConfig> = {
   id: "reddit",
   scope: "identity",
   duration: "temporary",
-  profile: ({
-    is_employee,
-    has_external_account,
-    snoovatar_img,
-    verified,
-    id,
-    over_18,
-    is_gold,
-    is_mod,
-    awarder_karma,
-    has_verified_email,
-    is_suspended,
-    icon_img,
-    pref_nightmode,
-    awardee_karma,
-    password_set,
-    link_karma,
-    total_karma,
-    name,
-    created,
-    created_utc,
-    comment_karma,
-  }) => ({
-    is_employee,
-    has_external_account,
-    snoovatar_img,
-    verified,
-    id,
-    over_18,
-    is_gold,
-    is_mod,
-    awarder_karma,
-    has_verified_email,
-    is_suspended,
-    icon_img,
-    pref_nightmode,
-    awardee_karma,
-    password_set,
-    link_karma,
-    total_karma,
-    name,
-    created,
-    created_utc,
-    comment_karma,
-  }),
+  profile: redditProfileHandler,
 };
 
 export class RedditOAuthProvider extends OAuth2Provider<RedditOAuthProviderConfig> {
@@ -67,6 +69,8 @@ export class RedditOAuthProvider extends OAuth2Provider<RedditOAuthProviderConfi
     });
   }
 
+  static profileHandler = redditProfileHandler;
+
   async getSigninUrl({ host }: ServerRequest, state: string) {
     const endpoint = "https://www.reddit.com/api/v1/authorize";
 
@@ -75,8 +79,8 @@ export class RedditOAuthProvider extends OAuth2Provider<RedditOAuthProviderConfi
       response_type: "code",
       state,
       redirect_uri: this.getCallbackUri(host),
-      duration: this.config.duration,
-      scope: this.config.scope,
+      duration: this.config.duration!,
+      scope: this.config.scope!,
     };
 
     const url = `${endpoint}?${new URLSearchParams(data)}`;

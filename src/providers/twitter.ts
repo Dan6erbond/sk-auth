@@ -75,7 +75,7 @@ export class TwitterAuthProvider extends OAuth2Provider<TwitterAuthProviderConfi
     const oauthVerifier = query.get("oauth_verifier");
     const redirect = this.getStateValue(query, "redirect");
 
-    const tokens = await this.getTokens(oauthToken, oauthVerifier);
+    const tokens = await this.getTokens(oauthToken!, oauthVerifier!);
     let user = await this.getUserProfile(tokens);
 
     if (this.config.profile) {

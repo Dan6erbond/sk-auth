@@ -19,17 +19,19 @@ export async function signIn(provider: string, data?: any, config?: SignInConfig
     return await res.json();
   }
 
-  let redirectUrl: string;
+  let redirectUrl: string | undefined;
   if (config?.redirectUrl) {
     redirectUrl = config.redirectUrl;
   } else {
-    let $val: Page;
+    let $val: Page | undefined;
     page.subscribe(($) => ($val = $))();
-    redirectUrl = `${$val.host}${$val.path}?${$val.query}`;
+    if ($val) {
+      redirectUrl = `${$val.host}${$val.path}?${$val.query}`;
+    }
   }
 
   const queryData = {
-    redirect: redirectUrl,
+    redirect: redirectUrl ?? "/",
   };
   const query = new URLSearchParams(queryData);
   const path = `/api/auth/login/${provider}?${query}`;

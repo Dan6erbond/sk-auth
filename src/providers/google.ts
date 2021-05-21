@@ -23,7 +23,7 @@ export class GoogleOAuthProvider extends OAuth2Provider<GoogleOAuthProviderConfi
   }
 
   async getProviderMetadata() {
-    const res = await fetch(this.config.discoveryDocument);
+    const res = await fetch(this.config.discoveryDocument!);
     const metadata = await res.json();
     return metadata;
   }
@@ -39,7 +39,7 @@ export class GoogleOAuthProvider extends OAuth2Provider<GoogleOAuthProviderConfi
     const data = {
       response_type: "code",
       client_id: this.config.clientId,
-      scope: this.config.scope,
+      scope: this.config.scope!,
       redirect_uri: this.getCallbackUri(host),
       state,
       login_hint: "example@provider.com",

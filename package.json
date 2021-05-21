@@ -1,24 +1,48 @@
 {
-  "name": "SvelteKitAuth",
+  "name": "svelte-kit-auth",
   "version": "1.0.0",
   "description": "Authentication library for use with SvelteKit featuring built-in OAuth providers and zero restriction customization!",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./client": "./dist/client/index.js",
+    "./providers": "./dist/providers/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "client": [
+        "./dist/client/index.d.ts"
+      ],
+      "providers": [
+        "./dist/providers/index.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "build": "tsc",
+    "build:watch": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
     "format": "prettier --write --plugin-search-dir=. ."
   },
   "keywords": [
+    "auth",
+    "authentication",
+    "csrf",
+    "jwt",
+    "nodejs",
+    "oauth",
+    "oauth2",
+    "oidc",
     "sveltejs",
     "sveltekit",
-    "auth",
-    "oauth"
+    "sveltekitauth"
   ],
   "author": "RaviAnand Mohabir <moravrav@gmail.com> (https://ravianand.web.app)",
+  "repository": "https://github.com/Dan6erbond/SvelteKitAuth",
   "license": "MIT",
   "private": false,
-  "types": "dist/index.d.ts",
   "dependencies": {
     "cookie": "^0.4.1",
     "jsonwebtoken": "^8.5.1"

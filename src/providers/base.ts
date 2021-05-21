@@ -11,7 +11,7 @@ export abstract class Provider<T extends ProviderConfig = ProviderConfig> {
   id: string;
 
   constructor(protected readonly config: T) {
-    this.id = config.id;
+    this.id = config.id!;
   }
 
   getUri(host: string, path: string) {

@@ -35,7 +35,7 @@ export abstract class OAuth2Provider<T extends OAuth2ProviderConfig> extends Pro
 
   getStateValue(query: URLSearchParams, name: string) {
     if (query.get("state")) {
-      const state = Buffer.from(query.get("state"), "base64").toString();
+      const state = Buffer.from(query.get("state")!, "base64").toString();
       return state
         .split(",")
         .find((state) => state.startsWith(`${name}=`))
@@ -47,7 +47,7 @@ export abstract class OAuth2Provider<T extends OAuth2ProviderConfig> extends Pro
     const code = query.get("code");
     const redirect = this.getStateValue(query, "redirect");
 
-    const tokens = await this.getTokens(code, this.getCallbackUri(host));
+    const tokens = await this.getTokens(code!, this.getCallbackUri(host));
     let user = await this.getUserProfile(tokens);
 
     if (this.config.profile) {
