@@ -28,7 +28,7 @@ export class FacebookAuthProvider extends OAuth2Provider<FacebookAuthProviderCon
 
     const data = {
       client_id: this.config.clientId,
-      scope: this.config.scope,
+      scope: this.config.scope!,
       redirect_uri: this.getCallbackUri(host),
       state,
     };
@@ -69,7 +69,7 @@ export class FacebookAuthProvider extends OAuth2Provider<FacebookAuthProviderCon
 
     const data = {
       access_token: tokens.access_token,
-      fields: this.config.userProfileFields,
+      fields: this.config.userProfileFields!,
     };
 
     const res = await fetch(`${endpoint}?${new URLSearchParams(data)}`);

@@ -79,8 +79,8 @@ export class RedditOAuthProvider extends OAuth2Provider<RedditOAuthProviderConfi
       response_type: "code",
       state,
       redirect_uri: this.getCallbackUri(host),
-      duration: this.config.duration,
-      scope: this.config.scope,
+      duration: this.config.duration!,
+      scope: this.config.scope!,
     };
 
     const url = `${endpoint}?${new URLSearchParams(data)}`;

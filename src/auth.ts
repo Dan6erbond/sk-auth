@@ -115,8 +115,7 @@ export class Auth {
     }
 
     const jwt = this.signToken(token);
-    console.log(jwt);
-    const redirect = await this.getRedirectUrl(host, redirectUrl);
+    const redirect = await this.getRedirectUrl(host, redirectUrl ?? undefined);
 
     return {
       status: 302,
@@ -158,9 +157,9 @@ export class Auth {
 
     const match = path.match(/\/api\/auth\/(?<method>signin|callback)\/(?<provider>\w+)/);
 
-    if (match) {
+    if (match && match.groups) {
       const provider = this.config?.providers?.find(
-        (provider) => provider.id === match.groups.provider,
+        (provider) => provider.id === match.groups!.provider,
       );
       if (provider) {
         if (match.groups.method === "signin") {
@@ -170,6 +169,11 @@ export class Auth {
         }
       }
     }
+
+    return {
+      status: 404,
+      body: "Not found.",
+    };
   }
 
   get: RequestHandler = async (request) => {
