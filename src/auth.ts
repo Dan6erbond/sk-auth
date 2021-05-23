@@ -105,7 +105,7 @@ export class Auth {
     provider: Provider,
   ): Promise<EndpointOutput> {
     const { headers, host } = request;
-    const [profile, redirectUrl] = await provider.callback(request);
+    const [profile, redirectUrl] = await provider.callback(request, this);
 
     let token = (await this.getToken(headers)) ?? { user: {} };
     if (this.config?.callbacks?.jwt) {
@@ -129,7 +129,7 @@ export class Auth {
   async handleEndpoint(request: ServerRequest): Promise<EndpointOutput> {
     const { path, headers, method, host } = request;
 
-    if (path === this.getPath("signout")) {
+    if (path === this.getPath("signout", host)) {
       const token = this.setToken(headers, {});
       const jwt = this.signToken(token);
 
@@ -163,7 +163,7 @@ export class Auth {
       );
       if (provider) {
         if (match.groups.method === "signin") {
-          return await provider.signin(request);
+          return await provider.signin(request, this);
         } else {
           return await this.handleProviderCallback(request, provider);
         }

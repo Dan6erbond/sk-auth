@@ -1,8 +1,8 @@
 import type { ServerRequest } from "@sveltejs/kit/types/endpoint";
 import type { CallbackResult } from "../types";
-import { OAuth2Provider, OAuth2ProviderConfig } from "./oauth2";
+import { OAuth2BaseProvider, OAuth2BaseProviderConfig } from "./oauth2.base";
 
-interface TwitterAuthProviderConfig extends OAuth2ProviderConfig {
+interface TwitterAuthProviderConfig extends OAuth2BaseProviderConfig {
   apiKey: string;
   apiSecret: string;
 }
@@ -11,7 +11,7 @@ const defaultConfig: Partial<TwitterAuthProviderConfig> = {
   id: "twitter",
 };
 
-export class TwitterAuthProvider extends OAuth2Provider<TwitterAuthProviderConfig> {
+export class TwitterAuthProvider extends OAuth2BaseProvider<TwitterAuthProviderConfig> {
   constructor(config: TwitterAuthProviderConfig) {
     super({
       ...defaultConfig,
@@ -37,7 +37,7 @@ export class TwitterAuthProvider extends OAuth2Provider<TwitterAuthProviderConfi
     };
   }
 
-  async getSigninUrl({ host }: ServerRequest) {
+  async getAuthorizationUrl({ host }: ServerRequest) {
     const endpoint = "https://api.twitter.com/oauth/authorize";
 
     const { oauthToken } = await this.getRequestToken(host);
