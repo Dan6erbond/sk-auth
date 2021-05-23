@@ -36,7 +36,7 @@
     "sveltekitauth"
   ],
   "author": "RaviAnand Mohabir <moravrav@gmail.com> (https://ravianand.web.app)",
-  "repository": "https://github.com/Dan6erbond/SvelteKitAuth.git",
+  "repository": "https://github.com/Dan6erbond/svelte-kit-auth.git",
   "license": "MIT",
   "private": false,
   "dependencies": {
