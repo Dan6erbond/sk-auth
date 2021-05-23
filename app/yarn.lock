@@ -2189,9 +2189,17 @@ svelte-hmr@^0.14.2:
   resolved "https://registry.yarnpkg.com/svelte-hmr/-/svelte-hmr-0.14.4.tgz#b7ef2bfeef23916e0e912828c50645ca572ac355"
   integrity sha512-kItFF7vqzStckSigoFmMnxJpTOdB9TWnQAW6Js+yAB4277tLbJIIE5KBlGHNmJNpA7MguqidsPB27Uw5UzQPCA==
 
-"svelte-kit-auth@link:..":
-  version "0.0.0"
-  uid ""
+"svelte-kit-auth@file:..":
+  version "1.0.0"
+  dependencies:
+    cookie "^0.4.1"
+    jsonwebtoken "^8.5.1"
+
+"svelte-kit-auth@file:../":
+  version "1.0.0"
+  dependencies:
+    cookie "^0.4.1"
+    jsonwebtoken "^8.5.1"
 
 svelte-preprocess@^4.7.1:
   version "4.7.3"

@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "es6",
-    "moduleResolution": "node",
     "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "noImplicitAny": false,
     "declaration": true,
     "removeComments": true,
@@ -13,9 +13,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true
+    "outDir": "./dist"
   },
-  "exclude": ["node_modules", "dist", "app"]
+  "include": ["src/**/*"],
+  "exclude": ["**/node_modules", "**/dist", "./app", "**/*.md", "**/rollup.config.js"]
 }

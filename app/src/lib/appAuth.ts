@@ -1,4 +1,4 @@
-import SvelteKitAuth from "svelte-kit-auth";
+import { SvelteKitAuth } from "svelte-kit-auth";
 import {
   FacebookAuthProvider,
   GoogleOAuthProvider,

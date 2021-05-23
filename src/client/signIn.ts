@@ -1,5 +1,5 @@
-import { goto } from "$app/navigation";
-import { page } from "$app/stores";
+/* import { goto } from "@sveltejs/kit/assets/runtime/app/navigation";
+import { page } from "@sveltejs/kit/assets/runtime/app/stores"; */
 import type { Page } from "@sveltejs/kit";
 
 interface SignInConfig {
@@ -24,7 +24,7 @@ export async function signIn(provider: string, data?: any, config?: SignInConfig
     redirectUrl = config.redirectUrl;
   } else {
     let $val: Page | undefined;
-    page.subscribe(($) => ($val = $))();
+    /* page.subscribe(($) => ($val = $))(); */
     if ($val) {
       redirectUrl = `${$val.host}${$val.path}?${$val.query}`;
     }
@@ -36,5 +36,5 @@ export async function signIn(provider: string, data?: any, config?: SignInConfig
   const query = new URLSearchParams(queryData);
   const path = `/api/auth/login/${provider}?${query}`;
 
-  return await goto(path);
+  return path; // await goto(path);
 }

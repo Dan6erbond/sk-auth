@@ -1,8 +1,12 @@
 <script lang="ts">
   import "../app.postcss";
   import { page, session } from "$app/stores";
-  import { signOut } from "svelte-kit-auth/client";
+  import { signOut as authSignOut } from "svelte-kit-auth/client";
   import clsx from "clsx";
+
+  function signOut() {
+    authSignOut().then(session.set);
+  }
 </script>
 
 <svelte:head>
@@ -191,7 +195,7 @@
     "items-center",
     "flex-col",
     "bg-orange-600",
-    "text-white"
+    "text-white",
   )}
 >
   <span>© RaviAnand M, 2021</span>

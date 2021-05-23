@@ -34,6 +34,6 @@
     "@fontsource/inter": "^4.3.0",
     "clsx": "^1.1.1",
     "prismjs": "^1.23.0",
-    "svelte-kit-auth": "link:../"
+    "svelte-kit-auth": "file:../"
   }
 }
