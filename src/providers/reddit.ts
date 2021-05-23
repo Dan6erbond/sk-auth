@@ -1,10 +1,6 @@
-import type { ServerRequest } from "@sveltejs/kit/types/endpoint";
 import { OAuth2Provider, OAuth2ProviderConfig } from "./oauth2";
 
-interface RedditOAuthProviderConfig extends OAuth2ProviderConfig {
-  apiKey: string;
-  apiSecret: string;
-  scope?: string;
+interface RedditOAuth2ProviderConfig extends OAuth2ProviderConfig {
   duration?: "temporary" | "permanent";
 }
 
@@ -54,15 +50,18 @@ const redditProfileHandler = ({
   comment_karma,
 });
 
-const defaultConfig: Partial<RedditOAuthProviderConfig> = {
+const defaultConfig: Partial<RedditOAuth2ProviderConfig> = {
   id: "reddit",
   scope: "identity",
   duration: "temporary",
   profile: redditProfileHandler,
+  authorizationUrl: "https://www.reddit.com/api/v1/authorize",
+  accessTokenUrl: "https://www.reddit.com/api/v1/access_token",
+  profileUrl: "https://oauth.reddit.com/api/v1/me",
 };
 
-export class RedditOAuthProvider extends OAuth2Provider<RedditOAuthProviderConfig> {
-  constructor(config: RedditOAuthProviderConfig) {
+export class RedditOAuth2Provider extends OAuth2Provider<RedditOAuth2ProviderConfig> {
+  constructor(config: RedditOAuth2ProviderConfig) {
     super({
       ...defaultConfig,
       ...config,
@@ -71,29 +70,13 @@ export class RedditOAuthProvider extends OAuth2Provider<RedditOAuthProviderConfi
 
   static profileHandler = redditProfileHandler;
 
-  async getSigninUrl({ host }: ServerRequest, state: string) {
-    const endpoint = "https://www.reddit.com/api/v1/authorize";
-
-    const data = {
-      client_id: this.config.apiKey,
-      response_type: "code",
-      state,
-      redirect_uri: this.getCallbackUri(host),
-      duration: this.config.duration!,
-      scope: this.config.scope!,
-    };
-
-    const url = `${endpoint}?${new URLSearchParams(data)}`;
-    return url;
-  }
-
   async getTokens(code: string, redirectUri: string) {
-    const endpoint = "https://www.reddit.com/api/v1/access_token";
+    const endpoint = this.config.accessTokenUrl!;
 
     const data = {
       code,
       redirect_uri: redirectUri,
-      grant_type: "authorization_code",
+      grant_type: this.config.grantType!,
     };
     const body = Object.entries(data)
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
@@ -105,19 +88,11 @@ export class RedditOAuthProvider extends OAuth2Provider<RedditOAuthProviderConfi
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization:
           "Basic " +
-          Buffer.from(`${this.config.apiKey}:${this.config.apiSecret}`).toString("base64"),
+          Buffer.from(`${this.config.clientId}:${this.config.clientSecret}`).toString("base64"),
       },
       body,
     });
 
-    return await res.json();
-  }
-
-  async getUserProfile(tokens: any) {
-    const endpoint = "https://oauth.reddit.com/api/v1/me";
-    const res = await fetch(endpoint, {
-      headers: { Authorization: `${tokens.token_type} ${tokens.access_token}` },
-    });
     return await res.json();
   }
 }

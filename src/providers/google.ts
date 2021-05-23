@@ -1,58 +1,37 @@
-import type { ServerRequest } from "@sveltejs/kit/types/endpoint";
 import { OAuth2Provider, OAuth2ProviderConfig } from "./oauth2";
 
-interface GoogleOAuthProviderConfig extends OAuth2ProviderConfig {
-  clientId: string;
-  clientSecret: string;
-  discoveryDocument?: string;
-  scope?: string;
-}
+interface GoogleOAuth2ProviderConfig extends OAuth2ProviderConfig {}
 
-const defaultConfig: Partial<GoogleOAuthProviderConfig> = {
+const defaultConfig: Partial<GoogleOAuth2ProviderConfig> = {
   id: "google",
-  discoveryDocument: "https://accounts.google.com/.well-known/openid-configuration",
-  scope: "openid profile email",
+  scope: ["openid", "profile", "email"],
+  accessTokenUrl: "https://accounts.google.com/o/oauth2/token",
+  authorizationUrl: "https://accounts.google.com/o/oauth2/auth?response_type=code",
+  profileUrl: "https://openidconnect.googleapis.com/v1/userinfo",
 };
 
-export class GoogleOAuthProvider extends OAuth2Provider<GoogleOAuthProviderConfig> {
-  constructor(config: GoogleOAuthProviderConfig) {
+export class GoogleOAuth2Provider extends OAuth2Provider<GoogleOAuth2ProviderConfig> {
+  constructor(config: GoogleOAuth2ProviderConfig) {
     super({
       ...defaultConfig,
       ...config,
     });
   }
 
-  async getProviderMetadata() {
-    const res = await fetch(this.config.discoveryDocument!);
-    const metadata = await res.json();
-    return metadata;
-  }
-
-  async getEndpoint(key: string) {
-    const metadata = await this.getProviderMetadata();
-    return metadata[key] as string;
-  }
-
-  async getSigninUrl({ host }: ServerRequest, state: string) {
-    const authorizationEndpoint = await this.getEndpoint("authorization_endpoint");
-
+  /* getAuthorizationUrl({ host }: ServerRequest, auth: Auth, state: string) {
     const data = {
       response_type: "code",
       client_id: this.config.clientId,
-      scope: this.config.scope!,
-      redirect_uri: this.getCallbackUri(host),
+      scope: Array.isArray(this.config.scope) ? this.config.scope.join(" ") : this.config.scope,
+      redirect_uri: this.getCallbackUri(auth, host),
       state,
-      login_hint: "example@provider.com",
-      nonce: Math.round(Math.random() * 1000).toString(), // TODO: Generate random based on user values
     };
 
-    const url = `${authorizationEndpoint}?${new URLSearchParams(data)}`;
+    const url = `${this.config.authorizationUrl!}?${new URLSearchParams(data)}`;
     return url;
-  }
+  } */
 
-  async getTokens(code: string, redirectUri: string) {
-    const tokenEndpoint = await this.getEndpoint("token_endpoint");
-
+  /* async getTokens(code: string, redirectUri: string) {
     const data = {
       code,
       client_id: this.config.clientId,
@@ -61,7 +40,7 @@ export class GoogleOAuthProvider extends OAuth2Provider<GoogleOAuthProviderConfi
       grant_type: "authorization_code",
     };
 
-    const res = await fetch(tokenEndpoint, {
+    const res = await fetch(this.config.accessTokenUrl!, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,13 +49,5 @@ export class GoogleOAuthProvider extends OAuth2Provider<GoogleOAuthProviderConfi
     });
 
     return await res.json();
-  }
-
-  async getUserProfile(tokens: any) {
-    const userProfileEndpoint = await this.getEndpoint("userinfo_endpoint");
-    const res = await fetch(userProfileEndpoint, {
-      headers: { Authorization: `${tokens.token_type} ${tokens.access_token}` },
-    });
-    return await res.json();
-  }
+  } */
 }

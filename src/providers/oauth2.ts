@@ -1,59 +1,69 @@
-import type { EndpointOutput, ServerRequest } from "@sveltejs/kit/types/endpoint";
-import type { CallbackResult } from "../types";
-import { Provider, ProviderConfig } from "./base";
+import type { ServerRequest } from "@sveltejs/kit/types/endpoint";
+import type { Auth } from "../auth";
+import { OAuth2BaseProvider, OAuth2BaseProviderConfig } from "./oauth2.base";
 
-export interface OAuth2ProviderConfig extends ProviderConfig {
-  profile?: (profile: any, tokens: any) => any | Promise<any>;
+export interface OAuth2ProviderConfig extends OAuth2BaseProviderConfig {
+  accessTokenUrl?: string;
+  authorizationUrl?: string;
+  profileUrl?: string;
+  clientId?: string;
+  clientSecret?: string;
+  scope: string | string[];
+  headers?: any;
+  authorizationParams?: any;
+  params: any;
+  grantType?: string;
+  responseType?: string;
 }
 
-export abstract class OAuth2Provider<T extends OAuth2ProviderConfig> extends Provider<T> {
-  abstract getSigninUrl(request: ServerRequest, state: string): string | Promise<string>;
-  abstract getTokens(code: string, redirectUri: string): any | Promise<any>;
-  abstract getUserProfile(tokens: any): any | Promise<any>;
+const defaultConfig: Partial<OAuth2ProviderConfig> = {
+  responseType: "code",
+  grantType: "authorization_code",
+};
 
-  async signin(request: ServerRequest): Promise<EndpointOutput> {
-    const { method, host, query } = request;
-    const state = [`redirect=${query.get("redirect") ?? this.getUri(host, "/")}`].join(",");
-    const base64State = Buffer.from(state).toString("base64");
-    const url = await this.getSigninUrl(request, base64State);
+export class OAuth2Provider<
+  T extends OAuth2ProviderConfig = OAuth2ProviderConfig,
+> extends OAuth2BaseProvider<T> {
+  constructor(config: T) {
+    super({
+      ...defaultConfig,
+      ...config,
+    });
+  }
 
-    if (method === "POST") {
-      return {
-        body: {
-          redirect: url,
-        },
-      };
-    }
-
-    return {
-      status: 302,
-      headers: {
-        Location: url,
-      },
+  getAuthorizationUrl({ host }: ServerRequest, auth: Auth, state: string) {
+    const data = {
+      state,
+      response_type: this.config.responseType,
+      client_id: this.config.clientId,
+      scope: Array.isArray(this.config.scope) ? this.config.scope.join(" ") : this.config.scope,
+      redirect_uri: this.getCallbackUri(auth, host),
+      nonce: Math.round(Math.random() * 1000).toString(), // TODO: Generate random based on user values
+      ...(this.config.authorizationParams ?? {}),
     };
+
+    const url = `${this.config.authorizationUrl}?${new URLSearchParams(data)}`;
+    return url;
   }
 
-  getStateValue(query: URLSearchParams, name: string) {
-    if (query.get("state")) {
-      const state = Buffer.from(query.get("state")!, "base64").toString();
-      return state
-        .split(",")
-        .find((state) => state.startsWith(`${name}=`))
-        ?.replace(`${name}=`, "");
-    }
+  async getTokens(code: string, redirectUri: string) {
+    const data = {
+      code,
+      grant_type: this.config.grantType,
+      client_id: this.config.clientId,
+      redirect_uri: redirectUri,
+      client_secret: this.config.clientSecret,
+      ...(this.config.params ?? {}),
+    };
+
+    const res = await fetch(`${this.config.accessTokenUrl}?${new URLSearchParams(data)}`);
+    return await res.json();
   }
 
-  async callback({ query, host }: ServerRequest): Promise<CallbackResult> {
-    const code = query.get("code");
-    const redirect = this.getStateValue(query, "redirect");
-
-    const tokens = await this.getTokens(code!, this.getCallbackUri(host));
-    let user = await this.getUserProfile(tokens);
-
-    if (this.config.profile) {
-      user = await this.config.profile(user, tokens);
-    }
-
-    return [user, redirect ?? this.getUri(host, "/")];
+  async getUserProfile(tokens: any) {
+    const res = await fetch(this.config.profileUrl!, {
+      headers: { Authorization: `${tokens.token_type} ${tokens.access_token}` },
+    });
+    return await res.json();
   }
 }
