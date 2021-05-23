@@ -2,7 +2,7 @@ name: Deploy package to NPM and GitHub package repository
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   publish:
