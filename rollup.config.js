@@ -1,14 +1,9 @@
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
 import multiInput from "rollup-plugin-multi-input";
-
-// this override is needed because Module format cjs does not support top-level await
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require("./package.json");
+import packageJson from "./package.json";
+import esbuild from "rollup-plugin-esbuild";
 
 const globals = {
+  ...packageJson.dependencies,
   ...packageJson.devDependencies,
 };
 
@@ -21,16 +16,13 @@ export default [
       format: "cjs",
     },
     plugins: [
-      peerDepsExternal(),
-      resolve(),
-      commonjs(),
-      typescript(),
+      esbuild(),
       multiInput(),
-      commonjs({
-        exclude: "node_modules",
-        ignoreGlobal: true,
-      }),
     ],
-    external: Object.keys(globals),
+    external: [
+      ...Object.keys(globals),
+      "@sveltejs/kit/assets/runtime/app/navigation",
+      "@sveltejs/kit/assets/runtime/app/stores",
+    ],
   },
 ];

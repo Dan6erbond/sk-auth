@@ -1,5 +1,5 @@
-import { goto } from "$app/navigation";
-import { page } from "$app/stores";
+import { goto } from "@sveltejs/kit/assets/runtime/app/navigation";
+import { page } from "@sveltejs/kit/assets/runtime/app/stores";
 import type { Page } from "@sveltejs/kit";
 
 interface SignInConfig {
