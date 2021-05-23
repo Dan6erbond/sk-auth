@@ -15,10 +15,7 @@ export default [
       sourcemap: true,
       format: "cjs",
     },
-    plugins: [
-      esbuild(),
-      multiInput(),
-    ],
+    plugins: [esbuild(), multiInput()],
     external: [
       ...Object.keys(globals),
       "@sveltejs/kit/assets/runtime/app/navigation",

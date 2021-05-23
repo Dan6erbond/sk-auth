@@ -8,7 +8,11 @@ export interface OAuth2BaseProviderConfig extends ProviderConfig {
 }
 
 export abstract class OAuth2BaseProvider<T extends OAuth2BaseProviderConfig> extends Provider<T> {
-  abstract getAuthorizationUrl(request: ServerRequest, auth: Auth, state: string): string | Promise<string>;
+  abstract getAuthorizationUrl(
+    request: ServerRequest,
+    auth: Auth,
+    state: string,
+  ): string | Promise<string>;
   abstract getTokens(code: string, redirectUri: string): any | Promise<any>;
   abstract getUserProfile(tokens: any): any | Promise<any>;
 
