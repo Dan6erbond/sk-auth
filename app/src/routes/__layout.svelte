@@ -1,7 +1,7 @@
 <script lang="ts">
   import "../app.postcss";
   import { page, session } from "$app/stores";
-  import { signOut as authSignOut } from "svelte-kit-auth/client";
+  import { signOut as authSignOut } from "sk-auth/client";
   import clsx from "clsx";
 
   function signOut() {

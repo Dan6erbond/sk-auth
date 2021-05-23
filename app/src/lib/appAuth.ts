@@ -1,10 +1,10 @@
-import { SvelteKitAuth } from "svelte-kit-auth";
+import { SvelteKitAuth } from "sk-auth";
 import {
   FacebookAuthProvider,
   GoogleOAuthProvider,
   RedditOAuthProvider,
   TwitterAuthProvider,
-} from "svelte-kit-auth/providers";
+} from "sk-auth/providers";
 
 export const appAuth = new SvelteKitAuth({
   providers: [
