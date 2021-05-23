@@ -2,6 +2,8 @@ import { OAuth2Provider, OAuth2ProviderConfig } from "./oauth2";
 
 interface RedditOAuth2ProviderConfig extends OAuth2ProviderConfig {
   duration?: "temporary" | "permanent";
+  apiKey: string;
+  apiSecret: string;
 }
 
 const redditProfileHandler = ({
@@ -65,6 +67,8 @@ export class RedditOAuth2Provider extends OAuth2Provider<RedditOAuth2ProviderCon
     super({
       ...defaultConfig,
       ...config,
+      clientId: config.apiKey,
+      clientSecret: config.apiSecret,
     });
   }
 
