@@ -1,7 +1,4 @@
-import { Auth } from "./auth";
-
+export { Auth as SvelteKitAuth } from "./auth";
 export { JWT, Session, User } from "./interfaces";
-export { Provider } from "./providers";
+export * as Providers from "./providers";
 export { CallbackResult, Profile } from "./types";
-
-export default Auth;

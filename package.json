@@ -3,25 +3,16 @@
   "version": "1.0.0",
   "description": "Authentication library for use with SvelteKit featuring built-in OAuth providers and zero restriction customization!",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "client",
+    "providers",
+    "README.md"
+  ],
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": "./dist/index.js",
-    "./client": "./dist/client/index.js",
-    "./providers": "./dist/providers/index.js"
-  },
-  "typesVersions": {
-    "*": {
-      "client": [
-        "./dist/client/index.d.ts"
-      ],
-      "providers": [
-        "./dist/providers/index.d.ts"
-      ]
-    }
-  },
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "build": "rollup --config",
+    "dev": "rollup --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
     "format": "prettier --write --plugin-search-dir=. ."
@@ -48,6 +39,9 @@
     "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-typescript": "^8.2.1",
     "@sveltejs/kit": "^1.0.0-next.107",
     "@types/jsonwebtoken": "^8.5.1",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
@@ -55,8 +49,15 @@
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.3.0",
+    "rollup": "^2.48.0",
+    "rollup-plugin-dts": "^3.0.2",
+    "rollup-plugin-multi-input": "^1.3.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "svelte": "^3.38.2",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": "next"
   }
 }
