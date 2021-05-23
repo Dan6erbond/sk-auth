@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build": "rollup --config",
-    "dev": "rollup --watch",
+    "dev": "rollup --config --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
     "format": "prettier --write --plugin-search-dir=. ."

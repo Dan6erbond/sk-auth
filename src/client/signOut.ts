@@ -1,12 +1,15 @@
-import { session as session$ } from "$app/stores";
+/* import { session as session$ } from "$app/stores"; */
 
 export async function signOut() {
-  const res = await fetch("/api/auth/signout", { method: "POST" });
+  let res = await fetch("/api/auth/signout", { method: "POST" });
   const { signout } = await res.json();
 
-  fetch("/api/auth/session")
-    .then((res) => res.json())
-    .then(session$.set);
+  if (!signout) {
+    throw new Error("Sign out not successful!");
+  }
 
-  return signout === true;
+  res = await fetch("/api/auth/session");
+  const session = await res.json();
+
+  return session;
 }
