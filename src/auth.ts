@@ -26,6 +26,10 @@ interface AuthCallbacks {
 export class Auth {
   constructor(private readonly config?: AuthConfig) {}
 
+  get basePath() {
+    return this.config?.basePath ?? "/api/auth";
+  }
+
   getJwtSecret() {
     if (this.config?.jwtSecret) {
       return this.config?.jwtSecret;
@@ -68,9 +72,14 @@ export class Auth {
     return this.config?.host ?? `http://${host}`;
   }
 
-  getPath(path: string, host?: string) {
-    const uri = join([this.config?.basePath ?? "/api/auth", path]);
-    return new URL(uri, this.getBaseUrl(host)).pathname;
+  getPath(path: string) {
+    const pathname = join([this.basePath, path]);
+    return pathname;
+  }
+
+  getUrl(path: string, host?: string) {
+    const pathname = this.getPath(path);
+    return new URL(pathname, this.getBaseUrl(host)).href;
   }
 
   setToken(headers: Headers, newToken: JWT | any) {
@@ -129,7 +138,7 @@ export class Auth {
   async handleEndpoint(request: ServerRequest): Promise<EndpointOutput> {
     const { path, headers, method, host } = request;
 
-    if (path === this.getPath("signout", host)) {
+    if (path === this.getPath("signout")) {
       const token = this.setToken(headers, {});
       const jwt = this.signToken(token);
 
