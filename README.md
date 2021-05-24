@@ -11,7 +11,7 @@ Authentication library for use with SvelteKit featuring built-in OAuth providers
 
 ## Getting Started
 
-SvelteKitAuth is very easy to setup! All you need to do is instantiate the `SvelteKitAuth` class, and configure it with some default providers:
+SvelteKitAuth is very easy to setup! All you need to do is instantiate the `SvelteKitAuth` class, and configure it with some default providers, as well as a JWT secret key used to verify the cookies:
 
 ```ts
 export const appAuth = new SvelteKitAuth({
@@ -24,27 +24,11 @@ export const appAuth = new SvelteKitAuth({
       },
     }),
   ],
-  callbacks: {
-    jwt(token, profile) {
-      if (profile?.provider) {
-        const { provider, ...account } = profile;
-        token = {
-          ...token,
-          user: {
-            ...token.user,
-            connections: { [provider]: account },
-          },
-        };
-      }
-
-      return token;
-    },
-  },
   jwtSecret: import.meta.env.JWT_SECRET_KEY,
 });
 ```
 
-If you want to augment the default SvelteKit session to get access to the user in the `session` store, you can use the `getSession` hook:
+If you want to override or augment the default SvelteKit session to get access to the user in the `session` store, you can use the `getSession` hook:
 
 ```ts
 // overriding the default session
@@ -56,6 +40,19 @@ export const getSession: GetSession = async (request) => {
 
   return { user };
 };
+```
+
+## Callbacks
+
+SvelteKitAuth provides some callbacks, similar to NextAuth.js. Their call signatures are:
+
+```ts
+interface AuthCallbacks {
+  signIn?: () => boolean | Promise<boolean>;
+  jwt?: (token: JWT, profile?: any) => JWT | Promise<JWT>;
+  session?: (token: JWT, session: Session) => Session | Promise<Session>;
+  redirect?: (url: string) => string | Promise<string>;
+}
 ```
 
 ## Adding more Providers
@@ -87,9 +84,43 @@ export type CallbackResult = [Profile, string | null];
 
 The first item in the tuple is the user profile, which gets stored in the token, and is provided to the `jwt()` callback as the second argument. The second item is a redirect route, which may be tracked using the `state` query parameter for OAuth providers, or other implementations depending on the sign-in method.
 
+### OAuth2
+
+SvelteKitAuth comes with a built-in OAuth2 provider that takes extensive configuration parameters to support almost any common OAuth2 provider which follows the OAuth2 spec. It can be imported from `sk-auth/providers` and configured with the following configuration object:
+
+```ts
+export interface OAuth2ProviderConfig<ProfileType = any, TokensType extends OAuth2Tokens = any>
+  extends OAuth2BaseProviderConfig<ProfileType, TokensType> {
+  accessTokenUrl?: string;
+  authorizationUrl?: string;
+  profileUrl?: string;
+  clientId?: string;
+  clientSecret?: string;
+  scope: string | string[];
+  headers?: any;
+  authorizationParams?: any;
+  params: any;
+  grantType?: string;
+  responseType?: string;
+  contentType?: "application/json" | "application/x-www-form-urlencoded";
+}
+```
+
+Some values have defaults which can be seen below:
+
+```ts
+const defaultConfig: Partial<OAuth2ProviderConfig> = {
+  responseType: "code",
+  grantType: "authorization_code",
+  contentType: "application/json",
+};
+```
+
+The `OAuth2Provider` class can then be instantiated with the configuration to support the OAuth2 flow, including authorization redirect, token retrieval and profile fetching. It will also automatically handle the `state` and `nonce` params for you.
+
 ## Motivation
 
-SvelteKitAuth is inspired by the [NextAuth.js](https://next-auth.js.org/) package built for the Next.js SSR framework for React. Unlike NextAuth.js, though, it is completely unopinionated and only provides implementations for default flows, while still enabling users to add their own providers.
+SvelteKitAuth is inspired by the [NextAuth.js](https://next-auth.js.org/) package built for the Next.js SSR framework for React. Unlike NextAuth.js it is completely unopinionated and only provides implementations for default flows, while still empowering users to add their own providers.
 
 As it leverages classes and Typescript, the implementation of such providers is very straightforward, and in the future it will even be possible to register multiple SvelteKitAuth handlers in the same project, should the need arise, by leveraging a class-based client and server setup.
 
