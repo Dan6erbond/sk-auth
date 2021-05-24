@@ -164,7 +164,8 @@ export class Auth {
       };
     }
 
-    const match = path.match(/\/api\/auth\/(?<method>signin|callback)\/(?<provider>\w+)/);
+    const regex = new RegExp(join([this.basePath, `(?<method>signin|callback)/(?<provider>\\w+)`]));
+    const match = path.match(regex);
 
     if (match && match.groups) {
       const provider = this.config?.providers?.find(
