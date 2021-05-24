@@ -16,15 +16,15 @@ export abstract class Provider<T extends ProviderConfig = ProviderConfig> {
   }
 
   getUri(svelteKitAuth: Auth, path: string, host?: string) {
-    return `http://${host}${path}`;
+    return svelteKitAuth.getUrl(path, host);
   }
 
   getCallbackUri(svelteKitAuth: Auth, host?: string) {
-    return svelteKitAuth.getPath(`${"/api/auth/callback/"}${this.id}`, host);
+    return this.getUri(svelteKitAuth, `${"/callback/"}${this.id}`, host);
   }
 
   getSigninUri(svelteKitAuth: Auth, host?: string) {
-    return svelteKitAuth.getPath(`${"/api/auth/signin/"}${this.id}`, host);
+    return this.getUri(svelteKitAuth, `${"/signin/"}${this.id}`, host);
   }
 
   abstract signin<Locals extends Record<string, any> = Record<string, any>, Body = unknown>(

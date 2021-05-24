@@ -1,8 +1,10 @@
 import type { ServerRequest } from "@sveltejs/kit/types/endpoint";
 import type { Auth } from "../auth";
-import { OAuth2BaseProvider, OAuth2BaseProviderConfig } from "./oauth2.base";
+import { ucFirst } from "../helpers";
+import { OAuth2BaseProvider, OAuth2BaseProviderConfig, OAuth2Tokens } from "./oauth2.base";
 
-export interface OAuth2ProviderConfig extends OAuth2BaseProviderConfig {
+export interface OAuth2ProviderConfig<ProfileType = any, TokensType extends OAuth2Tokens = any>
+  extends OAuth2BaseProviderConfig<ProfileType, TokensType> {
   accessTokenUrl?: string;
   authorizationUrl?: string;
   profileUrl?: string;
@@ -14,31 +16,35 @@ export interface OAuth2ProviderConfig extends OAuth2BaseProviderConfig {
   params: any;
   grantType?: string;
   responseType?: string;
+  contentType?: "application/json" | "application/x-www-form-urlencoded";
 }
 
 const defaultConfig: Partial<OAuth2ProviderConfig> = {
   responseType: "code",
   grantType: "authorization_code",
+  contentType: "application/json",
 };
 
 export class OAuth2Provider<
-  T extends OAuth2ProviderConfig = OAuth2ProviderConfig,
-> extends OAuth2BaseProvider<T> {
-  constructor(config: T) {
+  ProfileType = any,
+  TokensType extends OAuth2Tokens = OAuth2Tokens,
+  ConfigType extends OAuth2ProviderConfig = OAuth2ProviderConfig<ProfileType, TokensType>,
+> extends OAuth2BaseProvider<ProfileType, TokensType, ConfigType> {
+  constructor(config: ConfigType) {
     super({
       ...defaultConfig,
       ...config,
     });
   }
 
-  getAuthorizationUrl({ host }: ServerRequest, auth: Auth, state: string) {
+  getAuthorizationUrl({ host }: ServerRequest, auth: Auth, state: string, nonce: string) {
     const data = {
       state,
+      nonce,
       response_type: this.config.responseType,
       client_id: this.config.clientId,
       scope: Array.isArray(this.config.scope) ? this.config.scope.join(" ") : this.config.scope,
       redirect_uri: this.getCallbackUri(auth, host),
-      nonce: Math.round(Math.random() * 1000).toString(), // TODO: Generate random based on user values
       ...(this.config.authorizationParams ?? {}),
     };
 
@@ -46,8 +52,8 @@ export class OAuth2Provider<
     return url;
   }
 
-  async getTokens(code: string, redirectUri: string) {
-    const data = {
+  async getTokens(code: string, redirectUri: string): Promise<TokensType> {
+    const data: Record<string, any> = {
       code,
       grant_type: this.config.grantType,
       client_id: this.config.clientId,
@@ -56,13 +62,30 @@ export class OAuth2Provider<
       ...(this.config.params ?? {}),
     };
 
-    const res = await fetch(`${this.config.accessTokenUrl}?${new URLSearchParams(data)}`);
+    let body: string;
+    if (this.config.contentType === "application/x-www-form-urlencoded") {
+      body = Object.entries(data)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join("&");
+    } else {
+      body = JSON.stringify(data);
+    }
+
+    const res = await fetch(this.config.accessTokenUrl!, {
+      body,
+      method: "POST",
+      headers: {
+        "Content-Type": this.config.contentType,
+        ...(this.config.headers ?? {}),
+      },
+    });
+
     return await res.json();
   }
 
-  async getUserProfile(tokens: any) {
+  async getUserProfile(tokens: TokensType): Promise<ProfileType> {
     const res = await fetch(this.config.profileUrl!, {
-      headers: { Authorization: `${tokens.token_type} ${tokens.access_token}` },
+      headers: { Authorization: `${ucFirst(tokens.token_type)} ${tokens.access_token}` },
     });
     return await res.json();
   }

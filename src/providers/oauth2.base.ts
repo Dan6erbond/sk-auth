@@ -3,24 +3,41 @@ import type { Auth } from "../auth";
 import type { CallbackResult } from "../types";
 import { Provider, ProviderConfig } from "./base";
 
-export interface OAuth2BaseProviderConfig extends ProviderConfig {
-  profile?: (profile: any, tokens: any) => any | Promise<any>;
+export interface OAuth2Tokens {
+  access_token: string;
+  token_type: string;
 }
 
-export abstract class OAuth2BaseProvider<T extends OAuth2BaseProviderConfig> extends Provider<T> {
+export type ProfileCallback<ProfileType = any, TokensType = any, ReturnType = any> = (
+  profile: ProfileType,
+  tokens: TokensType,
+) => ReturnType | Promise<ReturnType>;
+
+export interface OAuth2BaseProviderConfig<ProfileType = any, TokensType = any>
+  extends ProviderConfig {
+  profile?: ProfileCallback<ProfileType, TokensType>;
+}
+
+export abstract class OAuth2BaseProvider<
+  ProfileType,
+  TokensType extends OAuth2Tokens,
+  T extends OAuth2BaseProviderConfig,
+> extends Provider<T> {
   abstract getAuthorizationUrl(
     request: ServerRequest,
     auth: Auth,
     state: string,
+    nonce: string,
   ): string | Promise<string>;
-  abstract getTokens(code: string, redirectUri: string): any | Promise<any>;
-  abstract getUserProfile(tokens: any): any | Promise<any>;
+  abstract getTokens(code: string, redirectUri: string): TokensType | Promise<TokensType>;
+  abstract getUserProfile(tokens: any): ProfileType | Promise<ProfileType>;
 
   async signin(request: ServerRequest, auth: Auth): Promise<EndpointOutput> {
     const { method, host, query } = request;
-    const state = [`redirect=${query.get("redirect") ?? this.getUri(auth, host, "/")}`].join(",");
+    const state = [`redirect=${query.get("redirect") ?? this.getUri(auth, "/", host)}`].join(",");
     const base64State = Buffer.from(state).toString("base64");
-    const url = await this.getAuthorizationUrl(request, auth, base64State);
+    const nonce = Math.round(Math.random() * 1000).toString(); // TODO: Generate random based on user values
+    const url = await this.getAuthorizationUrl(request, auth, base64State, nonce);
 
     if (method === "POST") {
       return {
@@ -59,6 +76,6 @@ export abstract class OAuth2BaseProvider<T extends OAuth2BaseProviderConfig> ext
       user = await this.config.profile(user, tokens);
     }
 
-    return [user, redirect ?? this.getUri(auth, host, "/")];
+    return [user, redirect ?? this.getUri(auth, "/", host)];
   }
 }

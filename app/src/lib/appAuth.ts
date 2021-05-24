@@ -1,21 +1,21 @@
 import { SvelteKitAuth } from "sk-auth";
 import {
-  FacebookAuthProvider,
-  GoogleOAuthProvider,
-  RedditOAuthProvider,
+  FacebookOAuth2Provider,
+  GoogleOAuth2Provider,
+  RedditOAuth2Provider,
   TwitterAuthProvider,
 } from "sk-auth/providers";
 
 export const appAuth = new SvelteKitAuth({
   providers: [
-    new GoogleOAuthProvider({
+    new GoogleOAuth2Provider({
       clientId: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID,
       clientSecret: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_SECRET,
       profile(profile) {
         return { ...profile, provider: "google" };
       },
     }),
-    new FacebookAuthProvider({
+    new FacebookOAuth2Provider({
       clientId: import.meta.env.VITE_FACEBOOK_OAUTH_CLIENT_ID,
       clientSecret: import.meta.env.VITE_FACEBOOK_OAUTH_CLIENT_SECRET,
       profile(profile) {
@@ -29,11 +29,11 @@ export const appAuth = new SvelteKitAuth({
         return { ...profile, provider: "twitter" };
       },
     }),
-    new RedditOAuthProvider({
+    new RedditOAuth2Provider({
       apiKey: import.meta.env.VITE_REDDIT_API_KEY,
       apiSecret: import.meta.env.VITE_REDDIT_API_SECRET,
       profile(profile) {
-        profile = RedditOAuthProvider.profileHandler(profile);
+        profile = RedditOAuth2Provider.profileHandler(profile);
         return { ...profile, provider: "reddit" };
       },
     }),
@@ -45,8 +45,8 @@ export const appAuth = new SvelteKitAuth({
         token = {
           ...token,
           user: {
-            ...token.user,
-            connections: { ...token.user.connections, [provider]: account },
+            ...(token.user ?? {}),
+            connections: { ...(token.user?.connections ?? {}), [provider]: account },
           },
         };
       }

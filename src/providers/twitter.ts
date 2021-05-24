@@ -1,4 +1,5 @@
 import type { ServerRequest } from "@sveltejs/kit/types/endpoint";
+import type { Auth } from "../auth";
 import type { CallbackResult } from "../types";
 import { OAuth2BaseProvider, OAuth2BaseProviderConfig } from "./oauth2.base";
 
@@ -19,11 +20,11 @@ export class TwitterAuthProvider extends OAuth2BaseProvider<TwitterAuthProviderC
     });
   }
 
-  async getRequestToken(host: string) {
+  async getRequestToken(auth: Auth, host?: string) {
     const endpoint = "https://api.twitter.com/oauth/request_token";
 
     const data = {
-      oauth_callback: encodeURIComponent(this.getCallbackUri(host)),
+      oauth_callback: encodeURIComponent(this.getCallbackUri(auth, host)),
       oauth_consumer_key: this.config.apiKey,
     };
 
@@ -37,10 +38,10 @@ export class TwitterAuthProvider extends OAuth2BaseProvider<TwitterAuthProviderC
     };
   }
 
-  async getAuthorizationUrl({ host }: ServerRequest) {
+  async getAuthorizationUrl({ host }: ServerRequest, auth: Auth, state: string, nonce: string) {
     const endpoint = "https://api.twitter.com/oauth/authorize";
 
-    const { oauthToken } = await this.getRequestToken(host);
+    const { oauthToken } = await this.getRequestToken(auth, host);
 
     const data = {
       oauth_token: oauthToken,
@@ -70,7 +71,7 @@ export class TwitterAuthProvider extends OAuth2BaseProvider<TwitterAuthProviderC
     return await res.json();
   }
 
-  async callback({ query, host }: ServerRequest): Promise<CallbackResult> {
+  async callback({ query, host }: ServerRequest, auth: Auth): Promise<CallbackResult> {
     const oauthToken = query.get("oauth_token");
     const oauthVerifier = query.get("oauth_verifier");
     const redirect = this.getStateValue(query, "redirect");
@@ -82,6 +83,6 @@ export class TwitterAuthProvider extends OAuth2BaseProvider<TwitterAuthProviderC
       user = await this.config.profile(user, tokens);
     }
 
-    return [user, redirect ?? this.getUri(host, "/")];
+    return [user, redirect ?? this.getUri(auth, "/", host)];
   }
 }
