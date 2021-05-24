@@ -9,6 +9,24 @@
 
 Authentication library for use with SvelteKit featuring built-in OAuth providers and zero restriction customization!
 
+## Installation
+
+SvelteKitAuth is available on NPM as `sk-auth`, it can be installed with NPM:
+
+```bash
+npm i sk-auth --save
+```
+
+Or Yarn:
+
+```bash
+yarn add sk-auth
+```
+
+### Usage with Typescript
+
+SvelteKitAuth also comes with first-class support for Typescript out of the box, so no need to add an additional `@types/` dev dependency! 🎉
+
 ## Getting Started
 
 SvelteKitAuth is very easy to setup! All you need to do is instantiate the `SvelteKitAuth` class, and configure it with some default providers, as well as a JWT secret key used to verify the cookies:
