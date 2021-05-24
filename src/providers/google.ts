@@ -28,7 +28,11 @@ const defaultConfig: Partial<GoogleOAuth2ProviderConfig> = {
   profileUrl: "https://openidconnect.googleapis.com/v1/userinfo",
 };
 
-export class GoogleOAuth2Provider extends OAuth2Provider<GoogleOAuth2ProviderConfig> {
+export class GoogleOAuth2Provider extends OAuth2Provider<
+  GoogleProfile,
+  GoogleTokens,
+  GoogleOAuth2ProviderConfig
+> {
   constructor(config: GoogleOAuth2ProviderConfig) {
     super({
       ...defaultConfig,

@@ -12,7 +12,7 @@ const defaultConfig: Partial<TwitterAuthProviderConfig> = {
   id: "twitter",
 };
 
-export class TwitterAuthProvider extends OAuth2BaseProvider<TwitterAuthProviderConfig> {
+export class TwitterAuthProvider extends OAuth2BaseProvider<any, any, TwitterAuthProviderConfig> {
   constructor(config: TwitterAuthProviderConfig) {
     super({
       ...defaultConfig,
