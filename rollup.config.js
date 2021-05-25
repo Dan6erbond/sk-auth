@@ -14,6 +14,7 @@ export default [
     output: {
       dir: "dist",
       sourcemap: true,
+      format: "cjs",
     },
     plugins: [
       esbuild(),
