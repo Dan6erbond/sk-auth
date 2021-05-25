@@ -17,8 +17,8 @@ export interface FacebookTokens {
   expires_in: number;
 }
 
-interface FacebookOAuth2ProviderConfig<ProfileType = FacebookProfile, TokensType = FacebookTokens>
-  extends OAuth2ProviderConfig<ProfileType, TokensType> {
+interface FacebookOAuth2ProviderConfig<ProfileType = FacebookProfile>
+  extends OAuth2ProviderConfig<ProfileType, FacebookTokens> {
   userProfileFields?: string | (keyof FacebookProfile | string)[];
 }
 
