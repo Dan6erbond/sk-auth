@@ -10,10 +10,10 @@ export interface OAuth2ProviderConfig<ProfileType = any, TokensType extends OAut
   profileUrl?: string;
   clientId?: string;
   clientSecret?: string;
-  scope: string | string[];
+  scope?: string | string[];
   headers?: any;
   authorizationParams?: any;
-  params: any;
+  params?: any;
   grantType?: string;
   responseType?: string;
   contentType?: "application/json" | "application/x-www-form-urlencoded";
@@ -43,7 +43,7 @@ export class OAuth2Provider<
       nonce,
       response_type: this.config.responseType,
       client_id: this.config.clientId,
-      scope: Array.isArray(this.config.scope) ? this.config.scope.join(" ") : this.config.scope,
+      scope: Array.isArray(this.config.scope) ? this.config.scope.join(" ") : this.config.scope!,
       redirect_uri: this.getCallbackUri(auth, host),
       ...(this.config.authorizationParams ?? {}),
     };
