@@ -20,8 +20,8 @@ export const appAuth = new SvelteKitAuth({
       },
     }),
     new TwitchOAuth2Provider({
-      clientId: import.meta.env.VITE_TWITCH_OAUTH_CLIENT_ID,
-      clientSecret: import.meta.env.VITE_TWITCH_OAUTH_CLIENT_SECRET,
+      clientId: process.env.TWITCH_OAUTH_CLIENT_ID,
+      clientSecret: process.env.TWITCH_OAUTH_CLIENT_SECRET,
       profile(profile) {
         return { ...profile, provider: "twitch" };
       },
