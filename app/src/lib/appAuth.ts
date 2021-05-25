@@ -12,29 +12,29 @@ dotenv.config();
 export const appAuth = new SvelteKitAuth({
   providers: [
     new GoogleOAuth2Provider({
-      clientId: process.env['VITE_GOOGLE_OAUTH_CLIENT_ID'],
-      clientSecret: process.env['GOOGLE_OAUTH_CLIENT_SECRET'],
+      clientId: process.env.GOOGLE_OAUTH_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
       profile(profile) {
         return { ...profile, provider: "google" };
       },
     }),
     new FacebookOAuth2Provider({
-      clientId: process.env['VITE_FACEBOOK_OAUTH_CLIENT_ID'],
-      clientSecret: process.env['FACEBOOK_OAUTH_CLIENT_SECRET'],
+      clientId: process.env.FACEBOOK_OAUTH_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_OAUTH_CLIENT_SECRET,
       profile(profile) {
         return { ...profile, provider: "facebook" };
       },
     }),
     new TwitterAuthProvider({
-      apiKey: process.env['VITE_TWITTER_API_KEY'],
-      apiSecret: process.env['TWITTER_API_SECRET'],
+      apiKey: process.env.TWITTER_API_KEY,
+      apiSecret: process.env.TWITTER_API_SECRET,
       profile(profile) {
         return { ...profile, provider: "twitter" };
       },
     }),
     new RedditOAuth2Provider({
-      apiKey: process.env['VITE_REDDIT_API_KEY'],
-      apiSecret: process.env['REDDIT_API_SECRET'],
+      apiKey: process.env.REDDIT_API_KEY,
+      apiSecret: process.env.REDDIT_API_SECRET,
       profile(profile) {
         const slim = RedditOAuth2Provider.profileHandler(profile);
         return { ...slim, provider: "reddit" };
@@ -57,5 +57,5 @@ export const appAuth = new SvelteKitAuth({
       return token;
     },
   },
-  jwtSecret: process.env['JWT_SECRET_KEY'],
+  jwtSecret: process.env.JWT_SECRET_KEY,
 });
