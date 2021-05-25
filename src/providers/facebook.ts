@@ -19,10 +19,10 @@ export interface FacebookTokens {
 
 interface FacebookOAuth2ProviderConfig<ProfileType = FacebookProfile>
   extends OAuth2ProviderConfig<ProfileType, FacebookTokens> {
-  userProfileFields?: string | (keyof FacebookProfile | string)[];
+  userProfileFields?: string | (keyof ProfileType)[] | (string | number | symbol)[];
 }
 
-const defaultConfig: Partial<FacebookOAuth2ProviderConfig> = {
+const defaultConfig: Partial<FacebookOAuth2ProviderConfig<any>> = {
   id: "facebook",
   scope: ["email", "public_profile", "user_link"],
   userProfileFields: [
@@ -41,12 +41,12 @@ const defaultConfig: Partial<FacebookOAuth2ProviderConfig> = {
   accessTokenUrl: "https://graph.facebook.com/v10.0/oauth/access_token",
 };
 
-export class FacebookOAuth2Provider extends OAuth2Provider<
-  FacebookProfile,
+export class FacebookOAuth2Provider<ProfileType = FacebookProfile> extends OAuth2Provider<
+  ProfileType,
   FacebookTokens,
-  FacebookOAuth2ProviderConfig
+  FacebookOAuth2ProviderConfig<ProfileType>
 > {
-  constructor(config: FacebookOAuth2ProviderConfig) {
+  constructor(config: FacebookOAuth2ProviderConfig<ProfileType>) {
     const userProfileFields = config.userProfileFields ?? defaultConfig.userProfileFields;
     const data = {
       fields: Array.isArray(userProfileFields) ? userProfileFields.join(",") : userProfileFields!,
