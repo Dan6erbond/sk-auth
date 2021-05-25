@@ -14,8 +14,8 @@
   const code = `export const appAuth = new SvelteKitAuth({
   providers: [
     new GoogleOAuthProvider({
-      clientId: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID,
-      clientSecret: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_SECRET,
+      clientId: process.env['VITE_GOOGLE_OAUTH_CLIENT_ID'],
+      clientSecret: process.env['GOOGLE_OAUTH_CLIENT_SECRET'],
       profile(profile) {
         return { ...profile, provider: "google" };
       },
@@ -37,7 +37,7 @@
       return token;
     },
   },
-  jwtSecret: import.meta.env.JWT_SECRET_KEY,
+  jwtSecret: process.env['JWT_SECRET_KEY'],
 });`;
 
   onMount(async () => {

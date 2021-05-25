@@ -33,6 +33,7 @@
     "@fontsource/fira-mono": "^4.3.0",
     "@fontsource/inter": "^4.3.0",
     "clsx": "^1.1.1",
+    "dotenv": "^10.0.0",
     "prismjs": "^1.23.0",
     "sk-auth": "file:../"
   }
