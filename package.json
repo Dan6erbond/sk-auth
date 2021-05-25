@@ -7,7 +7,8 @@
   "exports": {
     ".": "./dist/index.js",
     "./client": "./dist/client/index.js",
-    "./providers": "./dist/providers/index.js"
+    "./providers": "./dist/providers/index.js",
+    "./package.json": "./package.json"
   },
   "files": [
     "dist",
@@ -49,6 +50,7 @@
     "@types/jsonwebtoken": "^8.5.1",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
+    "build-esm": "^4.2.2",
     "esbuild": "^0.12.1",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
@@ -61,6 +63,7 @@
     "typescript": "^4.2.4"
   },
   "peerDependencies": {
-    "@sveltejs/kit": "next"
+    "@sveltejs/kit": "next",
+    "build-esm": "^4.2.2"
   }
 }
