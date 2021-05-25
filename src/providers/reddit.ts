@@ -159,7 +159,7 @@ interface RedditOAuth2ProviderConfig extends OAuth2ProviderConfig<RedditProfile,
   apiSecret: string;
 }
 
-const redditProfileHandler: ProfileCallback<RedditProfile, RedditTokens> = ({
+const redditProfileHandler = ({
   is_employee,
   has_external_account,
   snoovatar_img,
@@ -181,7 +181,7 @@ const redditProfileHandler: ProfileCallback<RedditProfile, RedditTokens> = ({
   created,
   created_utc,
   comment_karma,
-}) => ({
+}: RedditProfile) => ({
   is_employee,
   has_external_account,
   snoovatar_img,
