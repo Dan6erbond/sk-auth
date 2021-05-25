@@ -5,9 +5,9 @@ import {
   RedditOAuth2Provider,
   TwitterAuthProvider,
 } from "sk-auth/providers";
-import dotenv from 'dotenv';
+import { config } from "dotenv";
 
-dotenv.config();
+config();
 
 export const appAuth = new SvelteKitAuth({
   providers: [
