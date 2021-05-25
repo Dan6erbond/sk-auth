@@ -14,6 +14,8 @@ declare global {
       TWITTER_API_SECRET: string;
       REDDIT_API_KEY: string;
       REDDIT_API_SECRET: string;
+      TWITCH_OAUTH_CLIENT_ID: string;
+      TWITCH_OAUTH_CLIENT_SECRET: string;
       JWT_SECRET_KEY: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
