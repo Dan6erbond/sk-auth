@@ -2096,13 +2096,13 @@ simple-swizzle@^0.2.2:
     is-arrayish "^0.3.1"
 
 "sk-auth@file:..":
-  version "0.1.1"
+  version "0.3.5"
   dependencies:
     cookie "^0.4.1"
     jsonwebtoken "^8.5.1"
 
 "sk-auth@file:../":
-  version "0.1.1"
+  version "0.3.5"
   dependencies:
     cookie "^0.4.1"
     jsonwebtoken "^8.5.1"
