@@ -1,4 +1,6 @@
 export { Provider } from "./base";
+export { TwitchOAuth2Provider } from "./twitch";
+export type { TwitchProfile, TwitchTokens } from "./twitch";
 export { GoogleOAuth2Provider } from "./google";
 export type { GoogleProfile, GoogleTokens } from "./google";
 export { TwitterAuthProvider } from "./twitter";
