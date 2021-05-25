@@ -33,8 +33,8 @@ export const appAuth = new SvelteKitAuth({
       apiKey: import.meta.env.VITE_REDDIT_API_KEY,
       apiSecret: import.meta.env.VITE_REDDIT_API_SECRET,
       profile(profile) {
-        profile = RedditOAuth2Provider.profileHandler(profile);
-        return { ...profile, provider: "reddit" };
+        const slim = RedditOAuth2Provider.profileHandler(profile);
+        return { ...slim, provider: "reddit" };
       },
     }),
   ],
