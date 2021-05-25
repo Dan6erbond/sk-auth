@@ -1,5 +1,5 @@
 {
   "internal": true,
-  "module": "../dist/providers/index.js",
+  "main": "../dist/providers/index.js",
   "types": "../dist/providers/index.d.ts"
 }
