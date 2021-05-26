@@ -1,5 +1,6 @@
 {
   "internal": true,
   "main": "../dist/providers/index.js",
+  "module": "../dist/providers/index.esm.js",
   "types": "../dist/providers/index.d.ts"
 }

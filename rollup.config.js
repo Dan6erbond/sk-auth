@@ -8,26 +8,50 @@ const globals = {
   ...packageJson.devDependencies,
 };
 
+/** @type {import('rollup').RollupOptions} */
+const baseConfig = {
+  input: ["src/**/*.ts"],
+  output: {
+    dir: "dist",
+    sourcemap: true,
+  },
+  plugins: [
+    esbuild(),
+    typescript({
+      emitDeclarationOnly: true,
+      sourceMap: false,
+    }),
+  ],
+  external: [
+    ...Object.keys(globals),
+    "@sveltejs/kit/assets/runtime/app/navigation",
+    "@sveltejs/kit/assets/runtime/app/stores",
+  ],
+};
+
+/** @type {Array.<import('rollup').RollupOptions>} */
 export default [
   {
-    input: ["src/**/*.ts"],
+    ...baseConfig,
     output: {
-      dir: "dist",
-      sourcemap: true,
+      ...baseConfig.output,
       format: "cjs",
     },
+    plugins: [...baseConfig.plugins, multiInput()],
+  },
+  {
+    ...baseConfig,
+    output: {
+      ...baseConfig.output,
+      format: "esm",
+    },
     plugins: [
-      esbuild(),
-      multiInput(),
-      typescript({
-        emitDeclarationOnly: true,
-        sourceMap: false,
+      ...baseConfig.plugins,
+      multiInput({
+        /** @param {string} output */
+        transformOutputPath: (output) =>
+          `${output.split(".").slice(0, -1).join(".")}.esm.${output.split(".").slice(-1)}`,
       }),
-    ],
-    external: [
-      ...Object.keys(globals),
-      "@sveltejs/kit/assets/runtime/app/navigation",
-      "@sveltejs/kit/assets/runtime/app/stores",
     ],
   },
 ];
