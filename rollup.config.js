@@ -1,57 +1,43 @@
-import multiInput from "rollup-plugin-multi-input";
-import packageJson from "./package.json";
-import esbuild from "rollup-plugin-esbuild";
-import typescript from "@rollup/plugin-typescript";
+import fs from 'fs';
+import typescript from '@rollup/plugin-typescript';
+import pkg from "./package.json";
 
-const globals = {
-  ...packageJson.dependencies,
-  ...packageJson.devDependencies,
-};
+const ts_plugin = typescript({ include: 'src/**', typescript: require('typescript') });
 
-/** @type {import('rollup').RollupOptions} */
-const baseConfig = {
-  input: ["src/**/*.ts"],
-  output: {
-    dir: "dist",
-    sourcemap: true,
-  },
-  plugins: [
-    esbuild(),
-    typescript({
-      emitDeclarationOnly: true,
-      sourceMap: false,
-    }),
-  ],
-  external: [
-    ...Object.keys(globals),
-    "@sveltejs/kit/assets/runtime/app/navigation",
-    "@sveltejs/kit/assets/runtime/app/stores",
-  ],
-};
+function config(dir) {
+  const _dir = dir ? dir + '/' : '';
+  return {
+    input: `src/${_dir}index.ts`,
+    output: [
+      {
+        file: `${_dir}index.mjs`,
+        format: 'esm'
+      },
+      {
+        file: `${_dir}index.js`,
+        format: 'cjs'
+      }
+    ],
+    plugins: [
+      typescript({ include: 'src/**', typescript: require('typescript') }),
+      {
+        writeBundle() {
+          if (dir) {
+            fs.writeFileSync(`${_dir}/package.json`, JSON.stringify({
+              main: './index',
+              module: './index.mjs',
+              types: './index.d.ts'
+            }, null, '  '));
+          }
+          fs.writeFileSync(`${_dir}index.d.ts`, `export * from '../types/${_dir}index';`);
+        }
+      }
+    ],
+    external: [...Object.keys(pkg.dependencies)]
+  }
+}
+
+
 
 /** @type {Array.<import('rollup').RollupOptions>} */
-export default [
-  {
-    ...baseConfig,
-    output: {
-      ...baseConfig.output,
-      format: "cjs",
-    },
-    plugins: [...baseConfig.plugins, multiInput()],
-  },
-  {
-    ...baseConfig,
-    output: {
-      ...baseConfig.output,
-      format: "esm",
-    },
-    plugins: [
-      ...baseConfig.plugins,
-      multiInput({
-        /** @param {string} output */
-        transformOutputPath: (output) =>
-          `${output.split(".").slice(0, -1).join(".")}.esm.${output.split(".").slice(-1)}`,
-      }),
-    ],
-  },
-];
+export default [config(), config('providers'), config('client')]

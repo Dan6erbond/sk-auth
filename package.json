@@ -2,14 +2,23 @@
   "name": "sk-auth",
   "version": "0.3.7",
   "description": "Authentication library for use with SvelteKit featuring built-in OAuth providers and zero restriction customization!",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "module": "index.mjs",
+  "main": "index",
+  "types": "types/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./client": "./dist/client/index.js",
-    "./providers": "./dist/providers/index.js",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    },
+    "./providers": {
+      "import": "./providers/index.mjs",
+      "require": "./providers/index.js"
+    },
+    "./client": {
+      "import": "./client/index.mjs",
+      "require": "./client/index.js"
+    }
   },
   "files": [
     "dist",
@@ -18,7 +27,8 @@
     "README.md"
   ],
   "scripts": {
-    "build": "rollup --config",
+    "build": "rollup -c && npm run tsd",
+    "tsd": "tsc -p ./src --emitDeclarationOnly",
     "dev": "rollup --config --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
@@ -51,20 +61,15 @@
     "@types/jsonwebtoken": "^8.5.1",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
-    "build-esm": "^4.2.2",
-    "esbuild": "^0.12.1",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.3.0",
     "rollup": "^2.48.0",
-    "rollup-plugin-esbuild": "^4.2.3",
-    "rollup-plugin-multi-input": "^1.3.0",
     "svelte": "^3.38.2",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
   },
   "peerDependencies": {
-    "@sveltejs/kit": "next",
-    "build-esm": "^4.2.2"
+    "@sveltejs/kit": "next"
   }
 }

@@ -6,6 +6,7 @@
     "moduleResolution": "node",
     "noImplicitAny": false,
     "declaration": true,
+		"declarationDir": "types",
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -13,9 +14,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "baseUrl": "./",
-    "outDir": "./dist"
   },
   "include": ["src/**/*"],
-  "exclude": ["**/node_modules", "**/dist", "./app", "**/*.md", "**/rollup.config.js"]
+  "exclude": ["**/node_modules", "./app", "**/*.md", "**/rollup.config.js"]
 }

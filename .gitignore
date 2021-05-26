@@ -76,4 +76,8 @@ typings/
 .fusebox/
 
 # Build output
-dist/*
+/index.*ts
+/index.*js
+/providers
+/client
+/types
