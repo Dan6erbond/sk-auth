@@ -2,8 +2,6 @@ import fs from 'fs';
 import typescript from '@rollup/plugin-typescript';
 import pkg from "./package.json";
 
-const ts_plugin = typescript({ include: 'src/**', typescript: require('typescript') });
-
 function config(dir) {
   const _dir = dir ? dir + '/' : '';
   return {
