@@ -27,6 +27,7 @@
     "README.md"
   ],
   "scripts": {
+    "prepare": "npm run build",
     "build": "rollup -c && npm run tsd",
     "tsd": "tsc -p ./src --emitDeclarationOnly",
     "dev": "rollup --config --watch",
