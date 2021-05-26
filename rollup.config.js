@@ -33,7 +33,10 @@ function config(dir) {
         }
       }
     ],
-    external: [...Object.keys(pkg.dependencies)]
+    external: [
+      ...Object.keys(pkg.dependencies),
+      ...Object.keys(pkg.peerDependencies),
+    ]
   }
 }
 
