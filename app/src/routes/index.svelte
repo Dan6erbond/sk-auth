@@ -91,7 +91,12 @@
 </div>
 
 <p class={clsx("text-2xl", "text-center", "mb-2")}>Dead-Simple Authentication in Minutes!</p>
-<p class={clsx("text-lg", "text-center", "mb-6")}>Test it out for yourself <a href="/login" class={clsx("hover:text-orange-500", "transition-colors")}>here</a>.</p>
+<p class={clsx("text-lg", "text-center", "mb-6")}>
+  Test it out for yourself <a
+    href="/login"
+    class={clsx("hover:text-orange-500", "transition-colors")}>here</a
+  >.
+</p>
 
 <pre class="language-ts">
   <code class="language-ts">
