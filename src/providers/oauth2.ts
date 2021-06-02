@@ -87,6 +87,7 @@ export class OAuth2Provider<
     const res = await fetch(this.config.profileUrl!, {
       headers: { Authorization: `${ucFirst(tokens.token_type)} ${tokens.access_token}` },
     });
-    return await res.json();
+    const profile = await res.json();
+    return { ...profile, access_token: tokens.access_token };
   }
 }
