@@ -6,6 +6,8 @@
   export const hydrate = dev;
 </script>
 
+<script></script>
+
 <svelte:head>
   <title>Profile | SvelteKitAuth</title>
 </svelte:head>

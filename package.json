@@ -55,6 +55,7 @@
     "esbuild": "^0.12.1",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-svelte3": "^3.2.1",
     "prettier": "^2.3.0",
     "rollup": "^2.48.0",
     "rollup-plugin-esbuild": "^4.2.3",
