@@ -1,6 +1,7 @@
 import type { GetSession, RequestHandler } from "@sveltejs/kit";
-import type { EndpointOutput, ServerRequest } from "@sveltejs/kit/types/endpoint";
-import type { Headers } from "@sveltejs/kit/types/helper";
+import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
+import { RequestHeaders } from '@sveltejs/kit/types/helper';
+import { ServerRequest } from '@sveltejs/kit/types/hooks';
 import cookie from "cookie";
 import * as jsonwebtoken from "jsonwebtoken";
 import type { JWT, Session } from "./interfaces";
@@ -43,7 +44,7 @@ export class Auth {
     return "svelte_auth_secret";
   }
 
-  async getToken(headers: Headers) {
+  async getToken(headers: RequestHeaders) {
     if (!headers.cookie) {
       return null;
     }
@@ -82,7 +83,7 @@ export class Auth {
     return new URL(pathname, this.getBaseUrl(host)).href;
   }
 
-  setToken(headers: Headers, newToken: JWT | any) {
+  setToken(headers: RequestHeaders, newToken: JWT | any) {
     const originalToken = this.getToken(headers);
 
     return {
@@ -113,7 +114,7 @@ export class Auth {
     request: ServerRequest,
     provider: Provider,
   ): Promise<EndpointOutput> {
-    const { headers, host } = request;
+    const { headers, url } = request;
     const [profile, redirectUrl] = await provider.callback(request, this);
 
     let token = (await this.getToken(headers)) ?? { user: {} };
@@ -124,7 +125,7 @@ export class Auth {
     }
 
     const jwt = this.signToken(token);
-    const redirect = await this.getRedirectUrl(host, redirectUrl ?? undefined);
+    const redirect = await this.getRedirectUrl(url.host, redirectUrl ?? undefined);
 
     return {
       status: 302,
@@ -136,9 +137,9 @@ export class Auth {
   }
 
   async handleEndpoint(request: ServerRequest): Promise<EndpointOutput> {
-    const { path, headers, method, host } = request;
+    const { headers, method, url } = request;
 
-    if (path === this.getPath("signout")) {
+    if (url.pathname === this.getPath("signout")) {
       const token = this.setToken(headers, {});
       const jwt = this.signToken(token);
 
@@ -153,7 +154,7 @@ export class Auth {
         };
       }
 
-      const redirect = await this.getRedirectUrl(host);
+      const redirect = await this.getRedirectUrl(url.host);
 
       return {
         status: 302,
@@ -165,7 +166,7 @@ export class Auth {
     }
 
     const regex = new RegExp(join([this.basePath, `(?<method>signin|callback)/(?<provider>\\w+)`]));
-    const match = path.match(regex);
+    const match = url.pathname.match(regex);
 
     if (match && match.groups) {
       const provider = this.config?.providers?.find(
@@ -187,11 +188,11 @@ export class Auth {
   }
 
   get: RequestHandler = async (request) => {
-    const { path } = request;
+    const { url } = request;
 
-    if (path === this.getPath("csrf")) {
+    if (url.pathname === this.getPath("csrf")) {
       return { body: "1234" }; // TODO: Generate real token
-    } else if (path === this.getPath("session")) {
+    } else if (url.pathname === this.getPath("session")) {
       const session = await this.getSession(request);
       return {
         body: {

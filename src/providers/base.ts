@@ -1,5 +1,5 @@
 import type { EndpointOutput } from "@sveltejs/kit";
-import type { ServerRequest } from "@sveltejs/kit/types/endpoint";
+import { ServerRequest } from '@sveltejs/kit/types/hooks';
 import type { Auth } from "../auth";
 import type { CallbackResult } from "../types";
 

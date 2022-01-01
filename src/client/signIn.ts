@@ -1,6 +1,6 @@
 /* import { goto } from "@sveltejs/kit/assets/runtime/app/navigation";
 import { page } from "@sveltejs/kit/assets/runtime/app/stores"; */
-import type { Page } from "@sveltejs/kit";
+import type { LoadInput } from "@sveltejs/kit";
 
 interface SignInConfig {
   redirectUrl?: string;
@@ -23,10 +23,10 @@ export async function signIn(provider: string, data?: any, config?: SignInConfig
   if (config?.redirectUrl) {
     redirectUrl = config.redirectUrl;
   } else {
-    let $val: Page | undefined;
+    let $val: LoadInput | undefined;
     /* page.subscribe(($) => ($val = $))(); */
     if ($val) {
-      redirectUrl = `${$val.host}${$val.path}?${$val.query}`;
+      redirectUrl = `${$val.url.host}${$val.url.pathname}?${$val.url.searchParams}`;
     }
   }
 

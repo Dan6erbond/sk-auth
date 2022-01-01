@@ -1,4 +1,4 @@
-import type { ServerRequest } from "@sveltejs/kit/types/endpoint";
+import { ServerRequest } from '@sveltejs/kit/types/hooks';
 import type { Auth } from "../auth";
 import { ucFirst } from "../helpers";
 import { OAuth2BaseProvider, OAuth2BaseProviderConfig, OAuth2Tokens } from "./oauth2.base";
@@ -37,19 +37,19 @@ export class OAuth2Provider<
     });
   }
 
-  getAuthorizationUrl({ host }: ServerRequest, auth: Auth, state: string, nonce: string) {
+  getAuthorizationUrl({ url }: ServerRequest, auth: Auth, state: string, nonce: string) {
     const data = {
       state,
       nonce,
       response_type: this.config.responseType,
       client_id: this.config.clientId,
       scope: Array.isArray(this.config.scope) ? this.config.scope.join(" ") : this.config.scope!,
-      redirect_uri: this.getCallbackUri(auth, host),
+      redirect_uri: this.getCallbackUri(auth, url.host),
       ...(this.config.authorizationParams ?? {}),
     };
 
-    const url = `${this.config.authorizationUrl}?${new URLSearchParams(data)}`;
-    return url;
+    const authUrl = `${this.config.authorizationUrl}?${new URLSearchParams(data)}`;
+    return authUrl;
   }
 
   async getTokens(code: string, redirectUri: string): Promise<TokensType> {
