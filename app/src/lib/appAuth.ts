@@ -5,6 +5,7 @@ import {
   GoogleOAuth2Provider,
   RedditOAuth2Provider,
   TwitterAuthProvider,
+  SpotifyOAuth2Provider,
 } from "sk-auth/providers";
 
 export const appAuth = new SvelteKitAuth({
@@ -43,6 +44,13 @@ export const appAuth = new SvelteKitAuth({
       profile(profile) {
         const slim = RedditOAuth2Provider.profileHandler(profile);
         return { ...slim, provider: "reddit" };
+      },
+    }),
+    new SpotifyOAuth2Provider({
+      apiKey: import.meta.env.VITE_SPOTIFY_API_KEY,
+      apiSecret: import.meta.env.VITE_SPOTIFY_API_SECRET,
+      profile(profile) {
+        return { ...profile, provider: "spotify" };
       },
     }),
   ],
