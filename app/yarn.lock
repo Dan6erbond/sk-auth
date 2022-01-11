@@ -1467,7 +1467,7 @@ chokidar@^3.5.1:
   optionalDependencies:
     fsevents "~2.3.1"
 
-clipboard@^2.0.0:
+clipboard@^2.0.0, clipboard@^2.0.8:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/clipboard/-/clipboard-2.0.8.tgz#ffc6c103dd2967a83005f3f61976aa4655a4cdba"
   integrity sha512-Y6WO0unAIQp5bLmk1zdThRhgJt/x3ks6f30s3oE3H1mgIEU33XyQjEf8gsf6DxC7NPX8Y1SsNWjUjL/ywLnnbQ==
@@ -3436,12 +3436,6 @@ simple-swizzle@^0.2.2:
     is-arrayish "^0.3.1"
 
 "sk-auth@file:..":
-  version "0.3.7"
-  dependencies:
-    cookie "^0.4.1"
-    jsonwebtoken "^8.5.1"
-
-"sk-auth@file:../":
   version "0.3.7"
   dependencies:
     cookie "^0.4.1"

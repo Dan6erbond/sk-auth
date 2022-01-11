@@ -43,6 +43,7 @@ const defaultConfig: Partial<SpotifyOAuth2ProviderConfig> = {
   accessTokenUrl: "https://accounts.spotify.com/api/token",
   authorizationUrl: "https://accounts.spotify.com/authorize",
   profileUrl: "https://api.spotify.com/v1/me",
+  contentType: "application/x-www-form-urlencoded",
 };
 
 export class SpotifyOAuth2Provider extends OAuth2Provider<

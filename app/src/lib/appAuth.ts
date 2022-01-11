@@ -47,8 +47,8 @@ export const appAuth = new SvelteKitAuth({
       },
     }),
     new SpotifyOAuth2Provider({
-      apiKey: import.meta.env.VITE_SPOTIFY_API_KEY,
-      apiSecret: import.meta.env.VITE_SPOTIFY_API_SECRET,
+      clientId: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
+      clientSecret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
       profile(profile) {
         return { ...profile, provider: "spotify" };
       },
