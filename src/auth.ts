@@ -14,6 +14,7 @@ interface AuthConfig {
   jwtSecret?: string;
   jwtExpiresIn?: string | number;
   host?: string;
+  protocol?: string;
   basePath?: string;
 }
 
@@ -70,7 +71,9 @@ export class Auth {
   }
 
   getBaseUrl(host?: string) {
-    return this.config?.host ?? `http://${host}`;
+    const protocol = this.config?.protocol ?? "http";
+    host = this.config?.host ?? host;
+    return `${protocol}://${host}`;
   }
 
   getPath(path: string) {
