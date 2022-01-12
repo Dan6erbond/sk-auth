@@ -46,7 +46,9 @@ export interface SpotifyTokens {
   scope: string;
 }
 
-type SpotifyOAuth2ProviderConfig = OAuth2ProviderConfig<SpotifyProfile, SpotifyTokens>;
+interface SpotifyOAuth2ProviderConfig extends OAuth2ProviderConfig<SpotifyProfile, SpotifyTokens> {
+  show_dialog: boolean;
+}
 
 const defaultConfig: Partial<SpotifyOAuth2ProviderConfig> = {
   id: "spotify",
