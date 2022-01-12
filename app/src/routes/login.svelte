@@ -181,7 +181,7 @@
     </a>
 
     <a
-      href="/api/auth/signin/spotify"
+      href="/api/auth/signin/spotify?redirect=/profile"
       class={clsx(
         "text-sm",
         "md:text-base",
