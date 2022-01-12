@@ -1,4 +1,4 @@
-import { ServerRequest } from '@sveltejs/kit/types/hooks';
+import { ServerRequest } from "@sveltejs/kit/types/hooks";
 import type { Auth } from "../auth";
 import { ucFirst } from "../helpers";
 import { OAuth2BaseProvider, OAuth2BaseProviderConfig, OAuth2Tokens } from "./oauth2.base";

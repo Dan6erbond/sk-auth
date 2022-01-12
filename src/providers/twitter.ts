@@ -1,4 +1,4 @@
-import { ServerRequest } from '@sveltejs/kit/types/hooks';
+import { ServerRequest } from "@sveltejs/kit/types/hooks";
 import type { Auth } from "../auth";
 import type { CallbackResult } from "../types";
 import { OAuth2BaseProvider, OAuth2BaseProviderConfig } from "./oauth2.base";

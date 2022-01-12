@@ -5,7 +5,7 @@
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
     "preview": "svelte-kit preview",
-    "lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
+    "lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore --config .eslintrc.cjs .",
     "format": "prettier --write --plugin-search-dir=. ."
   },
   "devDependencies": {

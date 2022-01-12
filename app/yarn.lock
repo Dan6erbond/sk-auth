@@ -3441,12 +3441,6 @@ simple-swizzle@^0.2.2:
     cookie "^0.4.1"
     jsonwebtoken "^8.5.1"
 
-"sk-auth@file:../":
-  version "0.3.7"
-  dependencies:
-    cookie "^0.4.1"
-    jsonwebtoken "^8.5.1"
-
 slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"

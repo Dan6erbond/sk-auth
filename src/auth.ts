@@ -1,7 +1,7 @@
 import type { GetSession, RequestHandler } from "@sveltejs/kit";
 import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
-import { RequestHeaders } from '@sveltejs/kit/types/helper';
-import { ServerRequest } from '@sveltejs/kit/types/hooks';
+import { RequestHeaders } from "@sveltejs/kit/types/helper";
+import { ServerRequest } from "@sveltejs/kit/types/hooks";
 import cookie from "cookie";
 import * as jsonwebtoken from "jsonwebtoken";
 import type { JWT, Session } from "./interfaces";
