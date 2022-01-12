@@ -241,7 +241,7 @@
           </div>
         {/if}
       </div>
-    </div>    
+    </div>
   </div>
 
   <p class={clsx("text-lg", "mb-2")}>Session</p>
