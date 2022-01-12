@@ -10,6 +10,17 @@ export interface SpotifyProfile {
   images: SpotifyProfileImage[];
   type: string;
   uri: string;
+  // This field is only available when the current user has granted access to the user-read-private scope.
+  explicit_content?: SpotifyExplicitContent;
+  // This field is only available when the current user has granted access to the user-read-private scope.
+  product?: string;
+  // This field is only available when the current user has granted access to the user-read-private scope.
+  country?: string;
+}
+
+export interface SpotifyExplicitContent {
+  filter_enabled: boolean;
+  filter_locked: boolean;
 }
 
 export interface SpotifyProfileImage {
