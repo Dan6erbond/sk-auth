@@ -4,7 +4,6 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "./.eslintrc.shared.cjs",
+    "./.eslintrc-shared.cjs",
   ],
-  ignorePatterns: ["*.cjs", "app/**/*"],
 };

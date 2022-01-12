@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
-  extends: ["../.eslintrc.shared.cjs"],
+  extends: ["../.eslintrc-shared.cjs"],
   plugins: ["svelte3"],
   overrides: [
     {
