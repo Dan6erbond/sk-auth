@@ -31,7 +31,7 @@ SvelteKitAuth also comes with first-class support for Typescript out of the box,
 
 SvelteKitAuth is very easy to setup! All you need to do is instantiate the `SvelteKitAuth` class, and configure it with some default providers, as well as a JWT secret key used to verify the cookies:
 
-_**Warning**: env variables prefixed with `VITE_` can be exposed and leaked into client-side bundles if they are referenced in any client-side code. Make sure this is not the case, or consider using an alternative method such as loading them via dotenv directly instead._
+***Warning**: env variables prefixed with `VITE_` can be exposed and leaked into client-side bundles if they are referenced in any client-side code. Make sure this is not the case, or consider using an alternative method such as loading them via dotenv directly instead.*
 
 ```ts
 export const appAuth = new SvelteKitAuth({
