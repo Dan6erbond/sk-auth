@@ -1,1 +1,0 @@
-{"version":3,"file":"helpers.esm.js","sources":["../src/helpers.ts"],"sourcesContent":["export function ucFirst(val) {\r\n    return val.charAt(0).toUpperCase() + val.slice(1);\r\n}\r\n"],"names":[],"mappings":"iBAAwB,KAAK;AACzB,SAAO,IAAI,OAAO,GAAG,gBAAgB,IAAI,MAAM;AAAA;;;;"}
