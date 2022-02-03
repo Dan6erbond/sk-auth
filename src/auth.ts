@@ -46,11 +46,12 @@ export class Auth {
   }
 
   async getToken(headers: any) {
-    if (!headers.cookie) {
+    
+    if (!headers.get('cookie')) {
       return null;
     }
 
-    const cookies = cookie.parse(headers.cookie);
+    const cookies = cookie.parse(headers.get('cookie'));
 
     if (!cookies.svelteauthjwt) {
       return null;
