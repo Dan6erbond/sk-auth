@@ -1,13 +1,15 @@
 import type { Handle } from "@sveltejs/kit";
 import { appAuth } from "$lib/appAuth";
 
-export const handle: Handle = async ({ request, render }) => {
+export const handle: Handle = async ({ event, resolve }) => {
   // TODO https://github.com/sveltejs/kit/issues/1046
-  if (request.query.has("_method")) {
-    request.method = request.query.get("_method").toUpperCase();
+
+
+  if (event.request.query.has("_method")) {
+    event.request.method = event.request.query.get("_method").toUpperCase();
   }
 
-  const response = await render(request);
+  const response = await resolve(event);
 
   return response;
 };

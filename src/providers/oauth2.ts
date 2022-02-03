@@ -1,4 +1,4 @@
-import { ServerRequest } from "@sveltejs/kit/types/hooks";
+import { RequestEvent } from "@sveltejs/kit/types/hooks";
 import type { Auth } from "../auth";
 import { ucFirst } from "../helpers";
 import { OAuth2BaseProvider, OAuth2BaseProviderConfig, OAuth2Tokens } from "./oauth2.base";
@@ -37,7 +37,7 @@ export class OAuth2Provider<
     });
   }
 
-  getAuthorizationUrl({ url }: ServerRequest, auth: Auth, state: string, nonce: string) {
+  getAuthorizationUrl({ url }: RequestEvent, auth: Auth, state: string, nonce: string) {
     const data = {
       state,
       nonce,
