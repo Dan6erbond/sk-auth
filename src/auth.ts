@@ -72,7 +72,7 @@ export class Auth {
   }
 
   getBaseUrl(host?: string) {
-    const protocol = this.config?.protocol ?? "http";
+    const protocol = this.config?.protocol ?? "https";
     host = this.config?.host ?? host;
     return `${protocol}://${host}`;
   }
