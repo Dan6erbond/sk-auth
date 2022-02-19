@@ -6,6 +6,7 @@ import {
   RedditOAuth2Provider,
   TwitterAuthProvider,
   SpotifyOAuth2Provider,
+  DiscordOAuth2Provider,
 } from "sk-auth/providers";
 
 export const appAuth = new SvelteKitAuth({
@@ -51,6 +52,13 @@ export const appAuth = new SvelteKitAuth({
       clientSecret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
       profile(profile) {
         return { ...profile, provider: "spotify" };
+      },
+    }),
+    new DiscordOAuth2Provider({
+      clientId: import.meta.env.VITE_DISCORD_CLIENT_ID,
+      clientSecret: import.meta.env.VITE_DISCORD_CLIENT_SECRET,
+      profile(profile) {
+        return { ...profile, provider: "discord" };
       },
     }),
   ],
