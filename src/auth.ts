@@ -46,12 +46,11 @@ export class Auth {
   }
 
   async getToken(headers: any) {
-    
-    if (!headers.get('cookie')) {
+    if (!headers.get("cookie")) {
       return null;
     }
 
-    const cookies = cookie.parse(headers.get('cookie'));
+    const cookies = cookie.parse(headers.get("cookie"));
 
     if (!cookies.svelteauthjwt) {
       return null;
@@ -114,12 +113,9 @@ export class Auth {
     return redirect;
   }
 
-  async handleProviderCallback(
-    event: RequestEvent,
-    provider: Provider,
-  ): Promise<EndpointOutput> {
+  async handleProviderCallback(event: RequestEvent, provider: Provider): Promise<EndpointOutput> {
     const { headers } = event.request;
-    const {url} = event;
+    const { url } = event;
     const [profile, redirectUrl] = await provider.callback(event, this);
 
     let token = (await this.getToken(headers)) ?? { user: {} };
@@ -215,7 +211,7 @@ export class Auth {
   };
 
   getSession: GetSession = async (event: RequestEvent) => {
-    const {request} = event;
+    const { request } = event;
     const token = await this.getToken(request.headers);
 
     if (token) {

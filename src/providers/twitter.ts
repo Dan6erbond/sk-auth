@@ -72,7 +72,7 @@ export class TwitterAuthProvider extends OAuth2BaseProvider<any, any, TwitterAut
   }
 
   async callback(event: RequestEvent, auth: Auth): Promise<any> {
-    const {url} = event;
+    const { url } = event;
     const oauthToken = url.searchParams.get("oauth_token");
     const oauthVerifier = url.searchParams.get("oauth_verifier");
     const redirect = this.getStateValue(url.searchParams, "redirect");
