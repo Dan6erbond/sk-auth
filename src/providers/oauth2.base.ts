@@ -1,5 +1,5 @@
 import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
-import { ServerRequest } from "@sveltejs/kit/types/hooks";
+import { RequestEvent } from "@sveltejs/kit/types/hooks";
 import type { Auth } from "../auth";
 import type { CallbackResult } from "../types";
 import { Provider, ProviderConfig } from "./base";
@@ -25,7 +25,7 @@ export abstract class OAuth2BaseProvider<
   T extends OAuth2BaseProviderConfig,
 > extends Provider<T> {
   abstract getAuthorizationUrl(
-    request: ServerRequest,
+    event: RequestEvent,
     auth: Auth,
     state: string,
     nonce: string,
@@ -33,14 +33,15 @@ export abstract class OAuth2BaseProvider<
   abstract getTokens(code: string, redirectUri: string): TokensType | Promise<TokensType>;
   abstract getUserProfile(tokens: any): ProfileType | Promise<ProfileType>;
 
-  async signin(request: ServerRequest, auth: Auth): Promise<EndpointOutput> {
-    const { method, url } = request;
+  async signin(event: RequestEvent, auth: Auth): Promise<EndpointOutput> {
+    const { method } = event.request;
+    const { url } = event;
     const state = [
       `redirect=${url.searchParams.get("redirect") ?? this.getUri(auth, "/", url.host)}`,
     ].join(",");
     const base64State = Buffer.from(state).toString("base64");
     const nonce = Math.round(Math.random() * 1000).toString(); // TODO: Generate random based on user values
-    const authUrl = await this.getAuthorizationUrl(request, auth, base64State, nonce);
+    const authUrl = await this.getAuthorizationUrl(event, auth, base64State, nonce);
 
     if (method === "POST") {
       return {
@@ -68,7 +69,8 @@ export abstract class OAuth2BaseProvider<
     }
   }
 
-  async callback({ url }: ServerRequest, auth: Auth): Promise<CallbackResult> {
+  async callback(event: RequestEvent, auth: Auth): Promise<any> {
+    const { request, url } = event;
     const code = url.searchParams.get("code");
     const redirect = this.getStateValue(url.searchParams, "redirect");
 

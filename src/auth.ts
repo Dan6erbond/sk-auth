@@ -1,7 +1,7 @@
 import type { GetSession, RequestHandler } from "@sveltejs/kit";
 import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
-import { RequestHeaders } from "@sveltejs/kit/types/helper";
-import { ServerRequest } from "@sveltejs/kit/types/hooks";
+import { ResponseHeaders } from "@sveltejs/kit/types/helper";
+import { RequestEvent } from "@sveltejs/kit/types/hooks";
 import cookie from "cookie";
 import * as jsonwebtoken from "jsonwebtoken";
 import type { JWT, Session } from "./interfaces";
@@ -45,12 +45,12 @@ export class Auth {
     return "svelte_auth_secret";
   }
 
-  async getToken(headers: RequestHeaders) {
-    if (!headers.cookie) {
+  async getToken(headers: any) {
+    if (!headers.get("cookie")) {
       return null;
     }
 
-    const cookies = cookie.parse(headers.cookie);
+    const cookies = cookie.parse(headers.get("cookie"));
 
     if (!cookies.svelteauthjwt) {
       return null;
@@ -71,7 +71,7 @@ export class Auth {
   }
 
   getBaseUrl(host?: string) {
-    const protocol = this.config?.protocol ?? "http";
+    const protocol = this.config?.protocol ?? "https";
     host = this.config?.host ?? host;
     return `${protocol}://${host}`;
   }
@@ -86,7 +86,7 @@ export class Auth {
     return new URL(pathname, this.getBaseUrl(host)).href;
   }
 
-  setToken(headers: RequestHeaders, newToken: JWT | any) {
+  setToken(headers: any, newToken: JWT | any) {
     const originalToken = this.getToken(headers);
 
     return {
@@ -113,12 +113,10 @@ export class Auth {
     return redirect;
   }
 
-  async handleProviderCallback(
-    request: ServerRequest,
-    provider: Provider,
-  ): Promise<EndpointOutput> {
-    const { headers, url } = request;
-    const [profile, redirectUrl] = await provider.callback(request, this);
+  async handleProviderCallback(event: RequestEvent, provider: Provider): Promise<EndpointOutput> {
+    const { headers } = event.request;
+    const { url } = event;
+    const [profile, redirectUrl] = await provider.callback(event, this);
 
     let token = (await this.getToken(headers)) ?? { user: {} };
     if (this.config?.callbacks?.jwt) {
@@ -139,11 +137,12 @@ export class Auth {
     };
   }
 
-  async handleEndpoint(request: ServerRequest): Promise<EndpointOutput> {
-    const { headers, method, url } = request;
+  async handleEndpoint(event: RequestEvent): Promise<EndpointOutput> {
+    const { headers, method } = event.request;
+    const { url } = event;
 
     if (url.pathname === this.getPath("signout")) {
-      const token = this.setToken(headers, {});
+      const token = this.setToken(event.request.headers, {});
       const jwt = this.signToken(token);
 
       if (method === "POST") {
@@ -177,9 +176,9 @@ export class Auth {
       );
       if (provider) {
         if (match.groups.method === "signin") {
-          return await provider.signin(request, this);
+          return await provider.signin(event, this);
         } else {
-          return await this.handleProviderCallback(request, provider);
+          return await this.handleProviderCallback(event, provider);
         }
       }
     }
@@ -190,13 +189,13 @@ export class Auth {
     };
   }
 
-  get: RequestHandler = async (request) => {
-    const { url } = request;
+  get: RequestHandler = async (event: RequestEvent): Promise<any> => {
+    const { url } = event;
 
     if (url.pathname === this.getPath("csrf")) {
       return { body: "1234" }; // TODO: Generate real token
     } else if (url.pathname === this.getPath("session")) {
-      const session = await this.getSession(request);
+      const session = await this.getSession(event);
       return {
         body: {
           session,
@@ -204,15 +203,16 @@ export class Auth {
       };
     }
 
-    return await this.handleEndpoint(request);
+    return await this.handleEndpoint(event);
   };
 
-  post: RequestHandler = async (request) => {
-    return await this.handleEndpoint(request);
+  post: RequestHandler = async (event: RequestEvent) => {
+    return await this.handleEndpoint(event);
   };
 
-  getSession: GetSession = async ({ headers }) => {
-    const token = await this.getToken(headers);
+  getSession: GetSession = async (event: RequestEvent) => {
+    const { request } = event;
+    const token = await this.getToken(request.headers);
 
     if (token) {
       if (this.config?.callbacks?.session) {
