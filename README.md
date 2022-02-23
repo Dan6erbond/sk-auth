@@ -144,6 +144,10 @@ SvelteKitAuth is inspired by the [NextAuth.js](https://next-auth.js.org/) packag
 
 As it leverages classes and Typescript, the implementation of such providers is very straightforward, and in the future it will even be possible to register multiple SvelteKitAuth handlers in the same project, should the need arise, by leveraging a class-based client and server setup.
 
+## Examples
+
+Looking for help? Check out the [example app](./app/) in the repository source. Make something cool you want to show off? Share it with others [in the discussion section](https://github.com/Dan6erbond/sk-auth/discussions/72).
+
 ## Contributing
 
 🚧 Work in Progress!
