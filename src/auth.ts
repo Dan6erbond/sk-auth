@@ -1,6 +1,5 @@
 import type { GetSession, RequestHandler } from "@sveltejs/kit";
 import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
-import { ResponseHeaders } from "@sveltejs/kit/types/helper";
 import { RequestEvent } from "@sveltejs/kit/types/hooks";
 import cookie from "cookie";
 import * as jsonwebtoken from "jsonwebtoken";
