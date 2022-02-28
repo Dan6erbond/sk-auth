@@ -1,6 +1,7 @@
 /* import { session as session$ } from "$app/stores"; */
 
 import type { ClientRequestConfig } from "./types";
+import { mergePath } from "./helpers";
 
 export async function signOut(config?: ClientRequestConfig) {
   let res = await fetch(mergePath(["/api/auth", config?.basePath ?? null], "signout"), {
