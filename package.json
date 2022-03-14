@@ -67,5 +67,13 @@
   "peerDependencies": {
     "@sveltejs/kit": "next",
     "build-esm": "^4.2.2"
+  },
+  "peerDependenciesMeta": {
+    "@sveltejs/kit": {
+      "optional": true
+    },
+    "build-esm": {
+      "optional": true
+    }
   }
 }
