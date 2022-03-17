@@ -2,7 +2,7 @@ import type { GetSession, RequestHandler } from "@sveltejs/kit";
 import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
 import { RequestEvent } from "@sveltejs/kit/types/hooks";
 import cookie from "cookie";
-import * as jsonwebtoken from "jsonwebtoken";
+import { JWTPayload, jwtVerify, KeyLike, SignJWT } from "jose";
 import type { JWT, Session } from "./interfaces";
 import { join } from "./path";
 import type { Provider } from "./providers";
@@ -31,17 +31,19 @@ export class Auth {
     return this.config?.basePath ?? "/api/auth";
   }
 
-  getJwtSecret() {
+  getJwtSecret(): Uint8Array | KeyLike {
+    const encoder = new TextEncoder();
+
     if (this.config?.jwtSecret) {
-      return this.config?.jwtSecret;
+      return encoder.encode(this.config?.jwtSecret);
     }
 
     if (this.config?.providers?.length) {
       const provs = this.config?.providers?.map((provider) => provider.id).join("+");
-      return Buffer.from(provs).toString("base64");
+      return encoder.encode(provs);
     }
 
-    return "svelte_auth_secret";
+    return encoder.encode("svelte_auth_secret");
   }
 
   async getToken(headers: any) {
@@ -55,10 +57,11 @@ export class Auth {
       return null;
     }
 
-    let token: JWT;
+    let token: JWTPayload & JWT;
     try {
-      token = (jsonwebtoken.verify(cookies.svelteauthjwt, this.getJwtSecret()) || {}) as JWT;
-    } catch {
+      token = ((await jwtVerify(cookies.svelteauthjwt, this.getJwtSecret())) || {})
+        .payload as JWTPayload & JWT;
+    } catch (e) {
       return null;
     }
 
@@ -94,14 +97,12 @@ export class Auth {
     };
   }
 
-  signToken(token: JWT) {
-    const opts = !token.exp
-      ? {
-          expiresIn: this.config?.jwtExpiresIn ?? "30d",
-        }
-      : {};
-    const jwt = jsonwebtoken.sign(token, this.getJwtSecret(), opts);
-    return jwt;
+  async signToken(token: JWT) {
+    const jwt = new SignJWT(token).setProtectedHeader({ alg: "HS256", typ: "JWT" });
+    if (!token.exp) {
+      jwt.setExpirationTime(this.config?.jwtExpiresIn ?? "30d");
+    }
+    return jwt.sign(this.getJwtSecret());
   }
 
   async getRedirectUrl(host: string, redirectUrl?: string) {
@@ -124,7 +125,7 @@ export class Auth {
       token = this.setToken(headers, { user: profile });
     }
 
-    const jwt = this.signToken(token);
+    const jwt = await this.signToken(token);
     const redirect = await this.getRedirectUrl(url.host, redirectUrl ?? undefined);
 
     return {
@@ -142,7 +143,7 @@ export class Auth {
 
     if (url.pathname === this.getPath("signout")) {
       const token = this.setToken(event.request.headers, {});
-      const jwt = this.signToken(token);
+      const jwt = await this.signToken(token);
 
       if (method === "POST") {
         return {
