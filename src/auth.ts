@@ -3,6 +3,7 @@ import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
 import { RequestEvent } from "@sveltejs/kit/types/hooks";
 import cookie from "cookie";
 import { JWTPayload, jwtVerify, KeyLike, SignJWT } from "jose";
+import { base64Encode } from "./helpers";
 import type { JWT, Session } from "./interfaces";
 import { join } from "./path";
 import type { Provider } from "./providers";
@@ -40,7 +41,7 @@ export class Auth {
 
     if (this.config?.providers?.length) {
       const provs = this.config?.providers?.map((provider) => provider.id).join("+");
-      return encoder.encode(provs);
+      return encoder.encode(base64Encode(provs));
     }
 
     return encoder.encode("svelte_auth_secret");
