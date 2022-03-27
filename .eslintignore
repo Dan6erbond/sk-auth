@@ -1,3 +1,4 @@
 README.md
 app/
 *.cjs
+dist/
