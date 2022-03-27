@@ -47,7 +47,7 @@
           "rounded-full",
         )}
       >
-        {#if $page.path === "/profile"}
+        {#if $page.url.pathname === "/profile"}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class={clsx("h-6", "w-6")}
@@ -118,7 +118,7 @@
           "p-2",
           "rounded-full",
         )}
-        class:text-orange-500={$page.path === "/login"}
+        class:text-orange-500={$page.url.pathname === "/login"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
