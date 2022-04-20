@@ -31,7 +31,7 @@ SvelteKitAuth also comes with first-class support for Typescript out of the box,
 
 SvelteKitAuth is very easy to setup! All you need to do is instantiate the `SvelteKitAuth` class, and configure it with some default providers, as well as a JWT secret key used to verify the cookies:
 
-_**Warning**: env variables prefixed with `VITE_` can be exposed and leaked into client-side bundles if they are referenced in any client-side code. Make sure this is not the case, or consider using an alternative method such as loading them via dotenv directly instead._
+***Warning**: env variables prefixed with `VITE_` can be exposed and leaked into client-side bundles if they are referenced in any client-side code. Make sure this is not the case, or consider using an alternative method such as loading them via dotenv directly instead.*
 
 ```ts
 export const appAuth = new SvelteKitAuth({
@@ -143,6 +143,10 @@ The `OAuth2Provider` class can then be instantiated with the configuration to su
 SvelteKitAuth is inspired by the [NextAuth.js](https://next-auth.js.org/) package built for the Next.js SSR framework for React. Unlike NextAuth.js it is completely unopinionated and only provides implementations for default flows, while still empowering users to add their own providers.
 
 As it leverages classes and Typescript, the implementation of such providers is very straightforward, and in the future it will even be possible to register multiple SvelteKitAuth handlers in the same project, should the need arise, by leveraging a class-based client and server setup.
+
+## Examples
+
+Looking for help? Check out the [example app](./app/) in the repository source. Make something cool you want to show off? Share it with others [in the discussion section](https://github.com/Dan6erbond/sk-auth/discussions/72).
 
 ## Contributing
 

@@ -5,11 +5,11 @@
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
     "preview": "svelte-kit preview",
-    "lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
+    "lint": "prettier --check --plugin-search-dir=. . && eslint .",
     "format": "prettier --write --plugin-search-dir=. ."
   },
   "devDependencies": {
-    "@sveltejs/kit": "next",
+    "@sveltejs/kit": "^1.0.0-next.259",
     "@types/prismjs": "^1.16.5",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
@@ -33,6 +33,7 @@
   "dependencies": {
     "@fontsource/fira-mono": "^4.3.0",
     "@fontsource/inter": "^4.3.0",
+    "clipboard": "^2.0.8",
     "clsx": "^1.1.1",
     "prismjs": "^1.23.0",
     "sk-auth": "file:../"

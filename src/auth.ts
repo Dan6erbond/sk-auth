@@ -1,6 +1,6 @@
 import type { GetSession, RequestHandler } from "@sveltejs/kit";
-import type { EndpointOutput, ServerRequest } from "@sveltejs/kit/types/endpoint";
-import type { Headers } from "@sveltejs/kit/types/helper";
+import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
+import { RequestEvent } from "@sveltejs/kit/types/hooks";
 import cookie from "cookie";
 import * as jsonwebtoken from "jsonwebtoken";
 import type { JWT, Session } from "./interfaces";
@@ -13,6 +13,7 @@ interface AuthConfig {
   jwtSecret?: string;
   jwtExpiresIn?: string | number;
   host?: string;
+  protocol?: string;
   basePath?: string;
 }
 
@@ -43,12 +44,12 @@ export class Auth {
     return "svelte_auth_secret";
   }
 
-  async getToken(headers: Headers) {
-    if (!headers.cookie) {
+  async getToken(headers: any) {
+    if (!headers.get("cookie")) {
       return null;
     }
 
-    const cookies = cookie.parse(headers.cookie);
+    const cookies = cookie.parse(headers.get("cookie"));
 
     if (!cookies.svelteauthjwt) {
       return null;
@@ -69,7 +70,9 @@ export class Auth {
   }
 
   getBaseUrl(host?: string) {
-    return this.config?.host ?? `http://${host}`;
+    const protocol = this.config?.protocol ?? "https";
+    host = this.config?.host ?? host;
+    return `${protocol}://${host}`;
   }
 
   getPath(path: string) {
@@ -82,7 +85,7 @@ export class Auth {
     return new URL(pathname, this.getBaseUrl(host)).href;
   }
 
-  setToken(headers: Headers, newToken: JWT | any) {
+  setToken(headers: any, newToken: JWT | any) {
     const originalToken = this.getToken(headers);
 
     return {
@@ -109,12 +112,10 @@ export class Auth {
     return redirect;
   }
 
-  async handleProviderCallback(
-    request: ServerRequest,
-    provider: Provider,
-  ): Promise<EndpointOutput> {
-    const { headers, host } = request;
-    const [profile, redirectUrl] = await provider.callback(request, this);
+  async handleProviderCallback(event: RequestEvent, provider: Provider): Promise<EndpointOutput> {
+    const { headers } = event.request;
+    const { url } = event;
+    const [profile, redirectUrl] = await provider.callback(event, this);
 
     let token = (await this.getToken(headers)) ?? { user: {} };
     if (this.config?.callbacks?.jwt) {
@@ -124,7 +125,7 @@ export class Auth {
     }
 
     const jwt = this.signToken(token);
-    const redirect = await this.getRedirectUrl(host, redirectUrl ?? undefined);
+    const redirect = await this.getRedirectUrl(url.host, redirectUrl ?? undefined);
 
     return {
       status: 302,
@@ -135,11 +136,12 @@ export class Auth {
     };
   }
 
-  async handleEndpoint(request: ServerRequest): Promise<EndpointOutput> {
-    const { path, headers, method, host } = request;
+  async handleEndpoint(event: RequestEvent): Promise<EndpointOutput> {
+    const { headers, method } = event.request;
+    const { url } = event;
 
-    if (path === this.getPath("signout")) {
-      const token = this.setToken(headers, {});
+    if (url.pathname === this.getPath("signout")) {
+      const token = this.setToken(event.request.headers, {});
       const jwt = this.signToken(token);
 
       if (method === "POST") {
@@ -153,7 +155,7 @@ export class Auth {
         };
       }
 
-      const redirect = await this.getRedirectUrl(host);
+      const redirect = await this.getRedirectUrl(url.host);
 
       return {
         status: 302,
@@ -165,7 +167,7 @@ export class Auth {
     }
 
     const regex = new RegExp(join([this.basePath, `(?<method>signin|callback)/(?<provider>\\w+)`]));
-    const match = path.match(regex);
+    const match = url.pathname.match(regex);
 
     if (match && match.groups) {
       const provider = this.config?.providers?.find(
@@ -173,9 +175,9 @@ export class Auth {
       );
       if (provider) {
         if (match.groups.method === "signin") {
-          return await provider.signin(request, this);
+          return await provider.signin(event, this);
         } else {
-          return await this.handleProviderCallback(request, provider);
+          return await this.handleProviderCallback(event, provider);
         }
       }
     }
@@ -186,13 +188,13 @@ export class Auth {
     };
   }
 
-  get: RequestHandler = async (request) => {
-    const { path } = request;
+  get: RequestHandler = async (event: RequestEvent): Promise<any> => {
+    const { url } = event;
 
-    if (path === this.getPath("csrf")) {
+    if (url.pathname === this.getPath("csrf")) {
       return { body: "1234" }; // TODO: Generate real token
-    } else if (path === this.getPath("session")) {
-      const session = await this.getSession(request);
+    } else if (url.pathname === this.getPath("session")) {
+      const session = await this.getSession(event);
       return {
         body: {
           session,
@@ -200,15 +202,16 @@ export class Auth {
       };
     }
 
-    return await this.handleEndpoint(request);
+    return await this.handleEndpoint(event);
   };
 
-  post: RequestHandler = async (request) => {
-    return await this.handleEndpoint(request);
+  post: RequestHandler = async (event: RequestEvent) => {
+    return await this.handleEndpoint(event);
   };
 
-  getSession: GetSession = async ({ headers }) => {
-    const token = await this.getToken(headers);
+  getSession: GetSession = async (event: RequestEvent) => {
+    const { request } = event;
+    const token = await this.getToken(request.headers);
 
     if (token) {
       if (this.config?.callbacks?.session) {

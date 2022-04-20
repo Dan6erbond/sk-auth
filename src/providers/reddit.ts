@@ -1,5 +1,4 @@
 import { OAuth2Provider, OAuth2ProviderConfig } from "./oauth2";
-import type { ProfileCallback } from "./oauth2.base";
 
 export interface RedditProfile {
   is_employee: boolean;
