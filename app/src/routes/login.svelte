@@ -114,6 +114,28 @@
     </a>
 
     <a
+      href="/api/auth/signin/github"
+      class={clsx(
+        "text-sm",
+        "md:text-base",
+        "inline-flex",
+        "space-x-4",
+        "py-2",
+        "px-4",
+        "border-gray-400",
+        "rounded",
+        "hover:no-underline",
+        "border",
+        "hover:bg-gray-100",
+        "transition-colors",
+        "items-center",
+      )}
+    >
+
+      <span>Sign in with Github</span>
+    </a>
+
+    <a
       href="/api/auth/signin/facebook"
       class={clsx(
         "text-sm",

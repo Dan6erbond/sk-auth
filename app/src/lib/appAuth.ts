@@ -2,6 +2,7 @@ import { SvelteKitAuth } from "sk-auth";
 import {
   TwitchOAuth2Provider,
   FacebookOAuth2Provider,
+  GitHubOAuth2Provider,
   GoogleOAuth2Provider,
   RedditOAuth2Provider,
   TwitterAuthProvider,
@@ -10,6 +11,14 @@ import {
 
 export const appAuth = new SvelteKitAuth({
   providers: [
+    new GitHubOAuth2Provider({
+      clientId: import.meta.env.VITE_GITHUB_OAUTH_CLIENT_ID,
+      clientSecret: import.meta.env.VITE_GITHUB_OAUTH_CLIENT_SECRET,
+      profile(profile) {
+        console.log('profile:', profile);
+        return { ...profile, provider: "github",  };
+      }
+    }),
     new GoogleOAuth2Provider({
       clientId: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID,
       clientSecret: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_SECRET,

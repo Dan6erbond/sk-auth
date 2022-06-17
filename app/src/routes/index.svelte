@@ -5,7 +5,6 @@
   import { onMount } from "svelte";
   import "prismjs/plugins/toolbar/prism-toolbar.css";
   import "prismjs/themes/prism-tomorrow.css";
-  import "clipboard";
 
   export const hydrate = dev;
 </script>
