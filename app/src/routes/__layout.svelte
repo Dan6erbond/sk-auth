@@ -28,6 +28,34 @@
     "bg-white",
   )}
 >
+<button
+        class={clsx(
+          "flex",
+          "items-center",
+          "justify-center",
+          "hover:no-underline",
+          "hover:bg-orange-50",
+          "transition-colors",
+          "p-2",
+          "rounded-full",
+        )}
+        on:click={signOut}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class={clsx("h-6", "w-6")}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+          />
+        </svg>
+      </button>
   <a href="/" class={clsx("flex", "items-center", "space-x-2")}>
     <img src="/logo.svg" class={clsx("h-8", "w-8")} alt="SvelteKitAuth Logo" />
     <span class={clsx("text-2xl", "text-orange-500")}>SvelteKitAuth</span>
@@ -47,7 +75,7 @@
           "rounded-full",
         )}
       >
-        {#if $page.path === "/profile"}
+        {#if $page.url.pathname === "/profile"}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class={clsx("h-6", "w-6")}
@@ -118,7 +146,7 @@
           "p-2",
           "rounded-full",
         )}
-        class:text-orange-500={$page.path === "/login"}
+        class:text-orange-500={$page.url.pathname === "/login"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
