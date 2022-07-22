@@ -2,6 +2,7 @@
 import { page } from "@sveltejs/kit/assets/runtime/app/stores"; */
 import type { LoadInput } from "@sveltejs/kit";
 import type { ClientRequestConfig } from "./types";
+import { mergePath } from "./helpers";
 
 interface SignInConfig extends ClientRequestConfig {
   redirectUrl?: string;
