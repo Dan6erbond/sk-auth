@@ -1,4 +1,4 @@
-function mergePath(basePaths: (string | null)[], path: string) {
+export function mergePath(basePaths: (string | null)[], path: string) {
   if (path.startsWith("/")) {
     path = path.slice(1);
   }
