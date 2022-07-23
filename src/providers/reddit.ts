@@ -1,3 +1,4 @@
+import { base64Encode } from "../helpers";
 import { OAuth2Provider, OAuth2ProviderConfig } from "./oauth2";
 
 export interface RedditProfile {
@@ -228,7 +229,7 @@ export class RedditOAuth2Provider extends OAuth2Provider<
       headers: {
         ...config.headers,
         Authorization:
-          "Basic " + Buffer.from(`${config.apiKey}:${config.apiSecret}`).toString("base64"),
+          "Basic " + base64Encode(`${config.apiKey}:${config.apiSecret}`),
       },
       authorizationParams: {
         ...config.authorizationParams,

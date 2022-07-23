@@ -1,5 +1,6 @@
 import type { EndpointOutput } from "@sveltejs/kit/types/endpoint";
 import { RequestEvent } from "@sveltejs/kit/types/hooks";
+import { base64Encode, base64Decode } from "../helpers";
 import type { Auth } from "../auth";
 import type { CallbackResult } from "../types";
 import { Provider, ProviderConfig } from "./base";
@@ -39,7 +40,7 @@ export abstract class OAuth2BaseProvider<
     const state = [
       `redirect=${url.searchParams.get("redirect") ?? this.getUri(auth, "/", url.host)}`,
     ].join(",");
-    const base64State = Buffer.from(state).toString("base64");
+    const base64State = base64Encode(state);
     const nonce = Math.round(Math.random() * 1000).toString(); // TODO: Generate random based on user values
     const authUrl = await this.getAuthorizationUrl(event, auth, base64State, nonce);
 
@@ -61,7 +62,7 @@ export abstract class OAuth2BaseProvider<
 
   getStateValue(query: URLSearchParams, name: string) {
     if (query.get("state")) {
-      const state = Buffer.from(query.get("state")!, "base64").toString();
+      const state = base64Decode(query.get("state")!);
       return state
         .split(",")
         .find((state) => state.startsWith(`${name}=`))

@@ -44,7 +44,7 @@
   "private": false,
   "dependencies": {
     "cookie": "^0.4.1",
-    "jsonwebtoken": "^8.5.1"
+    "jose": "^4.6.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.2.1",
