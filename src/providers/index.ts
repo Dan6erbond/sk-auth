@@ -1,4 +1,6 @@
 export { Provider } from "./base";
+export { DiscordOAuth2Provider } from "./discord";
+export type { DiscordProfile, DiscordTokens } from "./discord";
 export { GitHubOAuth2Provider } from "./github";
 export type { GitHubProfile, GitHubTokens } from "./github";
 export { GoogleOAuth2Provider } from "./google";
