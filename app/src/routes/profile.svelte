@@ -245,12 +245,7 @@
   </div>
 
   <p class={clsx("text-lg", "mb-2")}>Session</p>
-  <pre
-    class={clsx(
-      "bg-gray-100",
-      "whitespace-pre-wrap",
-      "p-3",
-    )}>
+  <pre class={clsx("bg-gray-100", "whitespace-pre-wrap", "p-3")}>
     <code>{JSON.stringify($session, null, 2)}</code>
   </pre>
 </div>

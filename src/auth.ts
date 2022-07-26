@@ -188,7 +188,7 @@ export class Auth {
     };
   }
 
-  get: RequestHandler = async (event: RequestEvent): Promise<any> => {
+  GET: RequestHandler = async (event: RequestEvent): Promise<any> => {
     const { url } = event;
 
     if (url.pathname === this.getPath("csrf")) {
@@ -205,7 +205,7 @@ export class Auth {
     return await this.handleEndpoint(event);
   };
 
-  post: RequestHandler = async (event: RequestEvent) => {
+  POST: RequestHandler = async (event: RequestEvent) => {
     return await this.handleEndpoint(event);
   };
 
