@@ -15,6 +15,7 @@ interface AuthConfig {
   host?: string;
   protocol?: string;
   basePath?: string;
+  cookieName?: string;
 }
 
 interface AuthCallbacks {
@@ -29,6 +30,10 @@ export class Auth {
 
   get basePath() {
     return this.config?.basePath ?? "/api/auth";
+  }
+
+  get cookieName() {
+    return this.config?.cookieName ?? "svelteauthjwt";
   }
 
   getJwtSecret() {
@@ -51,13 +56,13 @@ export class Auth {
 
     const cookies = cookie.parse(headers.get("cookie"));
 
-    if (!cookies.svelteauthjwt) {
+    if (!cookies[this.cookieName]) {
       return null;
     }
 
     let token: JWT;
     try {
-      token = (jsonwebtoken.verify(cookies.svelteauthjwt, this.getJwtSecret()) || {}) as JWT;
+      token = (jsonwebtoken.verify(cookies[this.cookieName], this.getJwtSecret()) || {}) as JWT;
     } catch {
       return null;
     }
@@ -130,7 +135,7 @@ export class Auth {
     return {
       status: 302,
       headers: {
-        "set-cookie": `svelteauthjwt=${jwt}; Path=/; HttpOnly`,
+        "set-cookie": `${this.cookieName}=${jwt}; Path=/; HttpOnly`,
         Location: redirect,
       },
     };
@@ -147,7 +152,7 @@ export class Auth {
       if (method === "POST") {
         return {
           headers: {
-            "set-cookie": `svelteauthjwt=${jwt}; Path=/; HttpOnly`,
+            "set-cookie": `${this.cookieName}=${jwt}; Path=/; HttpOnly`,
           },
           body: {
             signout: true,
@@ -160,7 +165,7 @@ export class Auth {
       return {
         status: 302,
         headers: {
-          "set-cookie": `svelteauthjwt=${jwt}; Path=/; HttpOnly`,
+          "set-cookie": `${this.cookieName}=${jwt}; Path=/; HttpOnly`,
           Location: redirect,
         },
       };
